@@ -3,7 +3,6 @@
 package goutils
 
 import (
-	"github.com/axiaoxin-com/logging"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
@@ -12,7 +11,8 @@ import (
 // configPath 配置文件路径
 // configName 配置文件名（不带格式后缀）
 // configType 配置文件格式后缀
-func InitViper(configPath, configName, configType string) error {
+// onConfigChangeRun 配置文件发生变化时的回调函数
+func InitViper(configPath, configName, configType string, onConfigChangeRun func(in fsnotify.Event)) error {
 	viper.AddConfigPath(configPath)
 	viper.SetConfigName(configName)
 	viper.SetConfigType(configType)
@@ -20,8 +20,8 @@ func InitViper(configPath, configName, configType string) error {
 		return err
 	}
 	viper.WatchConfig()
-	viper.OnConfigChange(func(e fsnotify.Event) {
-		logging.Warns(nil, "viper config file changed:", e.Name)
-	})
+	if onConfigChangeRun != nil {
+		viper.OnConfigChange(onConfigChangeRun)
+	}
 	return nil
 }
