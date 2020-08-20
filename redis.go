@@ -6,7 +6,7 @@ import (
 	"github.com/go-redis/redis"
 )
 
-// NewRedisClient return a single instance redis client
+// NewRedisClient 返回 redis 的客户端连接对象
 func NewRedisClient(addr string, password string, dbindex int) (*redis.Client, error) {
 	r := redis.NewClient(&redis.Options{
 		Addr:     addr,
@@ -17,7 +17,7 @@ func NewRedisClient(addr string, password string, dbindex int) (*redis.Client, e
 	return r, err
 }
 
-// NewRedisSentinel return redis sentinel client
+// NewRedisSentinel 返回 redis sentinel 的连接对象
 func NewRedisSentinel(master string, addrs []string, password string, dbindex int) (*redis.Client, error) {
 	r := redis.NewFailoverClient(&redis.FailoverOptions{
 		MasterName:    master,
@@ -29,7 +29,7 @@ func NewRedisSentinel(master string, addrs []string, password string, dbindex in
 	return r, err
 }
 
-// NewRedisCluster return redis cluster client
+// NewRedisCluster 返回 redis cluster 的连接对象
 func NewRedisCluster(addrs []string, password string) (*redis.ClusterClient, error) {
 	c := redis.NewClusterClient(&redis.ClusterOptions{
 		Addrs:    addrs,

@@ -1,5 +1,3 @@
-// json marshal 一个带有time.Time字段类型的结构体时，时间格式固定为RFC3339格式
-// 将time.Time类型替换为JSONTime类型，可设置时间格式为TimeFormat中定义的格式
 package goutils
 
 import (
@@ -8,40 +6,36 @@ import (
 	"time"
 )
 
-// JSONTime custom format for json time field
+// JSONTime 用于在 json 中自定义时间格式
+// json marshal 一个带有 time.Time 字段类型的结构体时，时间格式固定为 RFC3339 格式
+// 将 time.Time 类型替换为 JSONTime 类型，可设置时间格式为 JSONTimeFormat 中定义的格式
 type JSONTime struct {
 	time.Time
 }
 
-// TimeFormat define the json time filed format
+// JSONTimeFormat 定义 JSONTime 的时间格式
+// 该值可以被外部修改为指定的其他格式
 var (
-	TimeFormat = "2006-01-02 15:04:05"
+	JSONTimeFormat = "2006-01-02 15:04:05"
 )
 
-// NewJSONTime create JSONTime
+// NewJSONTime 创建 JSONTime 对象
 func NewJSONTime(t time.Time) JSONTime {
 	return JSONTime{t}
 }
 
-// UnmarshalJSON on JSONTime format Time field with TimeFormat
-func (t JSONTime) UnmarshalJSON(data []byte) error {
-	now, err := time.ParseInLocation(`"`+TimeFormat+`"`, string(data), time.Local)
-	t.Time = now
-	return err
-}
-
-// MarshalJSON on JSONTime format Time field with TimeFormat
+// MarshalJSON 使用 JSONTimeFormat 覆盖 time 包中实现的 json.Marshaler 接口
 func (t JSONTime) MarshalJSON() ([]byte, error) {
-	formatted := fmt.Sprintf("\"%s\"", t.Format(TimeFormat))
+	formatted := fmt.Sprintf("\"%s\"", t.Format(JSONTimeFormat))
 	return []byte(formatted), nil
 }
 
-// String return TimeFormat
+// String 实现 String 方法 用于 print
 func (t JSONTime) String() string {
-	return t.Time.Format(TimeFormat)
+	return t.Time.Format(JSONTimeFormat)
 }
 
-// Value insert timestamp into mysql need this function.
+// Value 在 gorm 中只重写 MarshalJSON 是不够的，只写这个方法会在写数据库的时候会提示 delete_at 字段不存在，需要加上 database/sql 的 Value 和 Scan 方法
 func (t JSONTime) Value() (driver.Value, error) {
 	var zeroTime time.Time
 	if t.Time.UnixNano() == zeroTime.UnixNano() {
@@ -50,7 +44,7 @@ func (t JSONTime) Value() (driver.Value, error) {
 	return t.Time, nil
 }
 
-// Scan valueof time.Time
+// Scan 在 gorm 中只重写 MarshalJSON 是不够的，只写这个方法会在写数据库的时候会提示 delete_at 字段不存在，需要加上 database/sql 的 Value 和 Scan 方法
 func (t *JSONTime) Scan(v interface{}) error {
 	value, ok := v.(time.Time)
 	if ok {

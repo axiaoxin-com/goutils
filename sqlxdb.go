@@ -1,4 +1,4 @@
-// sqlx 创建db对象的函数封装
+// sqlx 创建 db 对象的函数封装
 
 package goutils
 
@@ -9,12 +9,12 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-// NewSqlxSQLite3 return sqlx sqlite3 db instance
-// dbname is dbfile path
-// logMode show detailed log
-// maxIdleConns sets the maximum number of connections in the idle connection pool
-// maxOpenConns sets the maximum number of open connections to the database.
-// connMaxLifeMinutes sets the maximum amount of time(minutes) a connection may be reused
+// NewSqlxSQLite3 返回 sqlx sqlite3 连接实例
+// dbname 数据库文件名（含路径）
+// logMode 是否开启打印日志模式
+// maxIdleConns 设置空闲连接池中的最大连接数
+// maxOpenConns 设置与数据库的最大打开连接数
+// connMaxLifeMinutes 设置可重用连接的最长时间（分钟）
 func NewSqlxSQLite3(dbname string, maxIdleConns, maxOpenConns, connMaxLifeMinutes int) (*sqlx.DB, error) {
 	db, err := sqlx.Open("sqlite3", dbname)
 	if err != nil {
@@ -26,19 +26,21 @@ func NewSqlxSQLite3(dbname string, maxIdleConns, maxOpenConns, connMaxLifeMinute
 	return db, nil
 }
 
-// NewSqlxMySQL return sqlx mysql db instance
-// host is database's host
-// port is database's port
-// dbname is database's dbname
-// usename is database's username
-// password is database's password
-// logMode show detailed log
-// maxIdleConns sets the maximum number of connections in the idle connection pool
-// maxOpenConns sets the maximum number of open connections to the database.
-// connMaxLifeMinutes sets the maximum amount of time(minutes) a connection may be reused
-// timeout conn timeout, readtimeout and writetimeout is x3
-func NewSqlxMySQL(host string, port int, username, password, dbname string, maxIdleConns, maxOpenConns, connMaxLifeMinutes, timeout int) (*sqlx.DB, error) {
-	dsn := fmt.Sprintf("%s:%s@(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local&timeout=%ds&readTimeout=%ds&writeTimeout=%ds", username, password, host, port, dbname, timeout, timeout*5, timeout*5)
+// NewSqlxMySQL 返回 sqlx mysql 连接实例
+// host 数据库 IP 地址
+// port 数据库端口
+// dbname 数据库名称
+// usename 数据库用户名
+// password 数据库密码
+// logMode 是否开启打印日志模式
+// maxIdleConns 设置空闲连接池中的最大连接数
+// maxOpenConns 设置与数据库的最大打开连接数
+// connMaxLifeMinutes 设置可重用连接的最长时间（分钟）
+// connTimeout 连接超时时间（秒）
+// readTimeout 读超时时间（秒）
+// writeTimeout 写超时时间（秒）
+func NewSqlxMySQL(host string, port int, username, password, dbname string, maxIdleConns, maxOpenConns, connMaxLifeMinutes, connTimeout, readTimeout, writeTimeout int) (*sqlx.DB, error) {
+	dsn := fmt.Sprintf("%s:%s@(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local&timeout=%ds&readTimeout=%ds&writeTimeout=%ds", username, password, host, port, dbname, connTimeout, readTimeout, writeTimeout)
 	db, err := sqlx.Open("mysql", dsn)
 	if err != nil {
 		return nil, err
@@ -49,19 +51,22 @@ func NewSqlxMySQL(host string, port int, username, password, dbname string, maxI
 	return db, nil
 }
 
-// NewSqlxPostgres return sqlx postgresql db instance
-// host is database's host
-// port is database's port
-// dbname is database's dbname
-// usename is database's username
-// sslmode ssl is disable or not
-// password is database's password
-// logMode show detailed log
-// maxIdleConns sets the maximum number of connections in the idle connection pool
-// maxOpenConns sets the maximum number of open connections to the database.
-// connMaxLifeMinutes sets the maximum amount of time(minutes) a connection may be reused
-func NewSqlxPostgres(host string, port int, username, password, dbname, sslmode string, maxIdleConns, maxOpenConns, connMaxLifeMinutes int) (*sqlx.DB, error) {
-	dsn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=%s", host, port, username, dbname, password, sslmode)
+// NewSqlxPostgres 返回 sqlx postgresql 连接实例
+// host 数据库 IP 地址
+// port 数据库端口
+// dbname 数据库名称
+// usename 数据库用户名
+// password 数据库密码
+// disableSSL 是否关闭 ssl 模式
+// logMode 是否开启打印日志模式
+// maxIdleConns 设置空闲连接池中的最大连接数
+// maxOpenConns 设置与数据库的最大打开连接数
+// connMaxLifeMinutes 设置可重用连接的最长时间（分钟）
+func NewSqlxPostgres(host string, port int, username, password, dbname string, disableSSL bool, maxIdleConns, maxOpenConns, connMaxLifeMinutes int) (*sqlx.DB, error) {
+	dsn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s", host, port, username, dbname, password)
+	if disableSSL {
+		dsn = dsn + " sslmode=disable"
+	}
 	db, err := sqlx.Open("postgres", dsn)
 	if err != nil {
 		return nil, err
@@ -72,16 +77,16 @@ func NewSqlxPostgres(host string, port int, username, password, dbname, sslmode 
 	return db, nil
 }
 
-// NewSqlxMsSQL return sqlx sqlserver db instance
-// host is database's host
-// port is database's port
-// dbname is database's dbname
-// usename is database's username
-// password is database's password
-// logMode show detailed log
-// maxIdleConns sets the maximum number of connections in the idle connection pool
-// maxOpenConns sets the maximum number of open connections to the database.
-// connMaxLifeMinutes sets the maximum amount of time(minutes) a connection may be reused
+// NewSqlxMsSQL 返回 sqlx sqlserver 连接实例
+// host 数据库 IP 地址
+// port 数据库端口
+// dbname 数据库名称
+// usename 数据库用户名
+// password 数据库密码
+// logMode 是否开启打印日志模式
+// maxIdleConns 设置空闲连接池中的最大连接数
+// maxOpenConns 设置与数据库的最大打开连接数
+// connMaxLifeMinutes 设置可重用连接的最长时间（分钟）
 func NewSqlxMsSQL(host string, port int, username, password, dbname string, maxIdleConns, maxOpenConns, connMaxLifeMinutes int) (*sqlx.DB, error) {
 	dsn := fmt.Sprintf("sqlserver://%s:%s@%s:%d?database=%s", username, password, host, port, dbname)
 	db, err := sqlx.Open("mssql", dsn)

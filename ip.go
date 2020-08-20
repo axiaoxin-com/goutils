@@ -4,7 +4,7 @@ package goutils
 
 import "net"
 
-// GetLocalIP 获取当前IP
+// GetLocalIP 获取当前 IP
 func GetLocalIP() (string, error) {
 	conn, err := net.Dial("udp", "8.8.8.8:80")
 	if err != nil {

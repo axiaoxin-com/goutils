@@ -16,12 +16,12 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
-// NewGormSQLite3 return gorm sqlite3 db instance
-// dbname is dbfile path
-// logMode show detailed log
-// maxIdleConns sets the maximum number of connections in the idle connection pool
-// maxOpenConns sets the maximum number of open connections to the database.
-// connMaxLifeMinutes sets the maximum amount of time(minutes) a connection may be reused
+// NewGormSQLite3 返回 gorm sqlite3 连接实例
+// dbname 数据库文件名（含路径）
+// logMode 是否开启打印日志模式
+// maxIdleConns 设置空闲连接池中的最大连接数
+// maxOpenConns 设置与数据库的最大打开连接数
+// connMaxLifeMinutes 设置可重用连接的最长时间（分钟）
 func NewGormSQLite3(dbname string, logMode bool, maxIdleConns, maxOpenConns, connMaxLifeMinutes int) (*gorm.DB, error) {
 	db, err := gorm.Open("sqlite3", dbname)
 	if err != nil {
@@ -34,19 +34,21 @@ func NewGormSQLite3(dbname string, logMode bool, maxIdleConns, maxOpenConns, con
 	return db, nil
 }
 
-// NewGormMySQL return gorm mysql db instance
-// host is database's host
-// port is database's port
-// dbname is database's dbname
-// usename is database's username
-// password is database's password
-// logMode show detailed log
-// maxIdleConns sets the maximum number of connections in the idle connection pool
-// maxOpenConns sets the maximum number of open connections to the database.
-// connMaxLifeMinutes sets the maximum amount of time(minutes) a connection may be reused
-// timeout conn timeout, readtimeout and writetimeout is x3
-func NewGormMySQL(host string, port int, username, password, dbname string, logMode bool, maxIdleConns, maxOpenConns, connMaxLifeMinutes, timeout int) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("%s:%s@(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local&timeout=%ds&readTimeout=%ds&writeTimeout=%ds", username, password, host, port, dbname, timeout, timeout*5, timeout*5)
+// NewGormMySQL 返回 gorm mysql 连接实例
+// host 数据库 IP 地址
+// port 数据库端口
+// dbname 数据库名称
+// usename 数据库用户名
+// password 数据库密码
+// logMode 是否开启打印日志模式
+// maxIdleConns 设置空闲连接池中的最大连接数
+// maxOpenConns 设置与数据库的最大打开连接数
+// connMaxLifeMinutes 设置可重用连接的最长时间（分钟）
+// connTimeout 连接超时时间（秒）
+// readTimeout 读超时时间（秒）
+// writeTimeout 写超时时间（秒）
+func NewGormMySQL(host string, port int, username, password, dbname string, logMode bool, maxIdleConns, maxOpenConns, connMaxLifeMinutes, connTimeout, readTimeout, writeTimeout int) (*gorm.DB, error) {
+	dsn := fmt.Sprintf("%s:%s@(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local&timeout=%ds&readTimeout=%ds&writeTimeout=%ds", username, password, host, port, dbname, connTimeout, readTimeout, writeTimeout)
 	db, err := gorm.Open("mysql", dsn)
 	if err != nil {
 		return nil, err
@@ -59,19 +61,22 @@ func NewGormMySQL(host string, port int, username, password, dbname string, logM
 	return db, nil
 }
 
-// NewGormPostgres return gorm postgresql db instance
-// host is database's host
-// port is database's port
-// dbname is database's dbname
-// usename is database's username
-// sslmode ssl is disable or not
-// password is database's password
-// logMode show detailed log
-// maxIdleConns sets the maximum number of connections in the idle connection pool
-// maxOpenConns sets the maximum number of open connections to the database.
-// connMaxLifeMinutes sets the maximum amount of time(minutes) a connection may be reused
-func NewGormPostgres(host string, port int, username, password, dbname, sslmode string, logMode bool, maxIdleConns, maxOpenConns, connMaxLifeMinutes int) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=%s", host, port, username, dbname, password, sslmode)
+// NewGormPostgres 返回 gorm postgresql 连接实例
+// host 数据库 IP 地址
+// port 数据库端口
+// dbname 数据库名称
+// usename 数据库用户名
+// password 数据库密码
+// disableSSL 是否关闭 ssl 模式
+// logMode 是否开启打印日志模式
+// maxIdleConns 设置空闲连接池中的最大连接数
+// maxOpenConns 设置与数据库的最大打开连接数
+// connMaxLifeMinutes 设置可重用连接的最长时间（分钟）
+func NewGormPostgres(host string, port int, username, password, dbname string, disableSSL, logMode bool, maxIdleConns, maxOpenConns, connMaxLifeMinutes int) (*gorm.DB, error) {
+	dsn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s", host, port, username, dbname, password)
+	if disableSSL {
+		dsn = dsn + " sslmode=disable"
+	}
 	db, err := gorm.Open("postgres", dsn)
 	if err != nil {
 		return nil, err
@@ -83,16 +88,16 @@ func NewGormPostgres(host string, port int, username, password, dbname, sslmode 
 	return db, nil
 }
 
-// NewGormMsSQL return gorm sqlserver db instance
-// host is database's host
-// port is database's port
-// dbname is database's dbname
-// usename is database's username
-// password is database's password
-// logMode show detailed log
-// maxIdleConns sets the maximum number of connections in the idle connection pool
-// maxOpenConns sets the maximum number of open connections to the database.
-// connMaxLifeMinutes sets the maximum amount of time(minutes) a connection may be reused
+// NewGormMsSQL 返回 gorm sqlserver 连接实例
+// host 数据库 IP 地址
+// port 数据库端口
+// dbname 数据库名称
+// usename 数据库用户名
+// password 数据库密码
+// logMode 是否开启打印日志模式
+// maxIdleConns 设置空闲连接池中的最大连接数
+// maxOpenConns 设置与数据库的最大打开连接数
+// connMaxLifeMinutes 设置可重用连接的最长时间（分钟）
 func NewGormMsSQL(host string, port int, username, password, dbname string, logMode bool, maxIdleConns, maxOpenConns, connMaxLifeMinutes int) (*gorm.DB, error) {
 	dsn := fmt.Sprintf("sqlserver://%s:%s@%s:%d?database=%s", username, password, host, port, dbname)
 	db, err := gorm.Open("mssql", dsn)
@@ -106,7 +111,7 @@ func NewGormMsSQL(host string, port int, username, password, dbname string, logM
 	return db, nil
 }
 
-// GormMySQLLikeFieldEscape 转义Gorm MySQL的like模糊查询时字段值为通配符的值
+// GormMySQLLikeFieldEscape 转义 Gorm MySQL 的 like 模糊查询时字段值为通配符的值
 func GormMySQLLikeFieldEscape(value string) string {
 	value = strings.Replace(value, ";", "\\;", -1)
 	value = strings.Replace(value, "\"", "\\\"", -1)

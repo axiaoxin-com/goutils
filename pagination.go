@@ -5,7 +5,7 @@ package goutils
 import "math"
 
 // Pagination Paginate return it
-// 异常数据时分页总数为0，当前页码、上下页码均不判断逻辑，只管数值增减
+// 异常数据时分页总数为 0 ，当前页码、上下页码均不判断逻辑，只管数值增减
 type Pagination struct {
 	// 数据总数
 	TotalCount int `json:"total_count"`
@@ -25,7 +25,7 @@ type Pagination struct {
 	NextPageNum int `json:"next_page_num"`
 }
 
-// PaginateByPageNumSize 按pagenum,pagesize计算分页信息
+// PaginateByPageNumSize 按 pagenum,pagesize 计算分页信息
 func PaginateByPageNumSize(totalCount, pageNum, pageSize int) *Pagination {
 	if totalCount <= 0 {
 		return nil
@@ -56,7 +56,7 @@ func PaginateByPageNumSize(totalCount, pageNum, pageSize int) *Pagination {
 	}
 }
 
-// PaginateByOffsetLimit 按offset,limit计算分页信息
+// PaginateByOffsetLimit 按 offset,limit 计算分页信息
 func PaginateByOffsetLimit(totalCount, offset, limit int) *Pagination {
 	if totalCount <= 0 {
 		return nil

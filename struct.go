@@ -8,11 +8,11 @@ import (
 	"strconv"
 )
 
-// StructToURLValues 将结构体指针对象转换为url.Values，key为json tag，value为结构体字段值，没有json tag则使用字段名称
+// StructToURLValues 将结构体指针对象转换为 url.Values ， key 为 json tag ， value 为结构体字段值，没有 json tag 则使用字段名称
 func StructToURLValues(i interface{}) (values url.Values) {
 	values = url.Values{}
 
-	iv := reflect.ValueOf(i).Elem() // Elem() 则i必须传指针，不使用Elem() 则不传递指针
+	iv := reflect.ValueOf(i).Elem() // Elem() 则 i 必须传指针，不使用 Elem() 则不传递指针
 	it := iv.Type()
 	for i := 0; i < iv.NumField(); i++ {
 		vf := iv.Field(i)
