@@ -1,4 +1,4 @@
-// viper读取配置的常用动作封装
+// viper 读取配置的常用动作封装
 
 package goutils
 

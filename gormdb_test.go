@@ -16,7 +16,7 @@ func TestNewGormSQLite3(t *testing.T) {
 }
 
 func TestNewGormMySQL(t *testing.T) {
-	db, err := NewGormMySQL("localhost", 3306, "root", "roooooot", "information_schema", false, 10, 10, 10, 3)
+	db, err := NewGormMySQL("localhost", 3306, "root", "roooooot", "information_schema", false, 10, 10, 10, 3, 5, 5)
 	if err != nil {
 		t.Error("new gorm mysql return error:", err)
 	}

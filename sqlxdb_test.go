@@ -16,7 +16,7 @@ func TestNewSqlxQLite3(t *testing.T) {
 }
 
 func TestNewSqlxMySQL(t *testing.T) {
-	db, err := NewSqlxMySQL("localhost", 3306, "root", "roooooot", "information_schema", 10, 10, 10, 3)
+	db, err := NewSqlxMySQL("localhost", 3306, "root", "roooooot", "information_schema", 10, 10, 10, 3, 3, 3)
 	if err != nil {
 		t.Error("new sqlx mysql return error:", err)
 	}
