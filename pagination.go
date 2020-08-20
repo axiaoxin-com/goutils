@@ -19,76 +19,36 @@ type Pagination struct {
 	HasPrev bool `json:"has_prev"`
 	// 是否有下一页
 	HasNext bool `json:"has_next"`
-	// 上一页页码
-	PrevPageNum int `json:"prev_page_num"`
-	// 下一页页码
-	NextPageNum int `json:"next_page_num"`
 }
 
 // PaginateByPageNumSize 按 pagenum,pagesize 计算分页信息
+// 参数必须全部大于 0
 func PaginateByPageNumSize(totalCount, pageNum, pageSize int) Pagination {
-	if totalCount <= 0 {
-		return Pagination{}
+	if totalCount <= 0 || pageNum <= 0 || pageSize <= 0 {
+		return Pagination{
+			TotalCount: totalCount,
+			PageNum:    pageNum,
+			PageSize:   pageSize,
+		}
 	}
-	pagesCount := 0
-	if pageSize > 0 {
-		pagesCount = int(math.Ceil(float64(totalCount) / float64(pageSize)))
-	}
-	hasNext := true
+	pagesCount := int(math.Ceil(float64(totalCount) / float64(pageSize)))
 	nextPageNum := pageNum + 1
-	if nextPageNum >= pagesCount {
-		hasNext = false
-	}
-	hasPrev := true
+	hasNext := nextPageNum < pagesCount
 	prevPageNum := pageNum - 1
-	if prevPageNum <= 0 {
-		hasPrev = false
-	}
+	hasPrev := prevPageNum > 0
 	return Pagination{
-		TotalCount:  totalCount,
-		PagesCount:  pagesCount,
-		PageNum:     pageNum,
-		PageSize:    pageSize,
-		HasPrev:     hasPrev,
-		HasNext:     hasNext,
-		PrevPageNum: prevPageNum,
-		NextPageNum: nextPageNum,
+		TotalCount: totalCount,
+		PagesCount: pagesCount,
+		PageNum:    pageNum,
+		PageSize:   pageSize,
+		HasPrev:    hasPrev,
+		HasNext:    hasNext,
 	}
 }
 
 // PaginateByOffsetLimit 按 offset,limit 计算分页信息
 func PaginateByOffsetLimit(totalCount, offset, limit int) Pagination {
-	if totalCount <= 0 {
-		return Pagination{}
-	}
-	pageNum := 1
-	if offset <= 0 {
-		pageNum = 1
-	} else {
-		pageNum = offset/limit + 1
-	}
-	pagesCount := 0
-	if limit > 0 {
-		pagesCount = int(math.Ceil(float64(totalCount) / float64(limit)))
-	}
-	hasNext := true
-	nextPageNum := pageNum + 1
-	if limit == 0 || offset+limit >= totalCount || nextPageNum >= pagesCount {
-		hasNext = false
-	}
-	hasPrev := true
-	prevPageNum := pageNum - 1
-	if limit == 0 || offset+limit <= 0 || pageNum == 1 {
-		hasPrev = false
-	}
-	return Pagination{
-		TotalCount:  totalCount,
-		PagesCount:  pagesCount,
-		PageNum:     pageNum,
-		PageSize:    limit,
-		HasPrev:     hasPrev,
-		HasNext:     hasNext,
-		PrevPageNum: prevPageNum,
-		NextPageNum: nextPageNum,
-	}
+	pageNum := offset/limit + 1
+	pageSize := limit
+	return PaginateByPageNumSize(totalCount, pageNum, pageSize)
 }
