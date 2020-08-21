@@ -34,18 +34,18 @@ type DBConfig struct {
 	DisableSSL bool
 }
 
-// MySQLDsn 返回 Mysql dsn 字符串
-func (conf DBConfig) MySQLDsn() string {
+// MySQLDSN 返回 Mysql dsn 字符串
+func (conf DBConfig) MySQLDSN() string {
 	return fmt.Sprintf("%s:%s@(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local&timeout=%ds&readTimeout=%ds&writeTimeout=%ds", conf.Username, conf.Password, conf.Host, conf.Port, conf.DBName, conf.ConnTimeout, conf.ReadTimeout, conf.WriteTimeout)
 }
 
-// SQLite3Dsn 返回 sqlite3 文件名
-func (conf DBConfig) SQLite3Dsn() string {
+// SQLite3DSN 返回 sqlite3 文件名
+func (conf DBConfig) SQLite3DSN() string {
 	return conf.DBName
 }
 
-// PostgresDsn 返回 postgres dns 字符串
-func (conf DBConfig) PostgresDsn() string {
+// PostgresDSN 返回 postgres dns 字符串
+func (conf DBConfig) PostgresDSN() string {
 	dsn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s", conf.Host, conf.Port, conf.Username, conf.DBName, conf.Password)
 	if conf.DisableSSL {
 		dsn = dsn + " sslmode=disable"
@@ -53,7 +53,7 @@ func (conf DBConfig) PostgresDsn() string {
 	return dsn
 }
 
-// MsSQLDsn 返回 mssql dns 字符串
-func (conf DBConfig) MsSQLDsn() string {
+// MsSQLDSN 返回 mssql dns 字符串
+func (conf DBConfig) MsSQLDSN() string {
 	return fmt.Sprintf("sqlserver://%s:%s@%s:%d?database=%s", conf.Username, conf.Password, conf.Host, conf.Port, conf.DBName)
 }

@@ -19,7 +19,7 @@ import (
 
 // NewGormSQLite3 返回 gorm sqlite3 连接实例
 func NewGormSQLite3(conf DBConfig) (*gorm.DB, error) {
-	gormSqlite3, err := gorm.Open("sqlite3", conf.SQLite3Dsn())
+	gormSqlite3, err := gorm.Open("sqlite3", conf.SQLite3DSN())
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func NewGormSQLite3(conf DBConfig) (*gorm.DB, error) {
 
 // NewGormMySQL 返回 gorm mysql 连接实例
 func NewGormMySQL(conf DBConfig) (*gorm.DB, error) {
-	gormMysql, err := gorm.Open("mysql", conf.MySQLDsn())
+	gormMysql, err := gorm.Open("mysql", conf.MySQLDSN())
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func NewGormMySQL(conf DBConfig) (*gorm.DB, error) {
 
 // NewGormPostgres 返回 gorm postgresql 连接实例
 func NewGormPostgres(conf DBConfig) (*gorm.DB, error) {
-	gormPostgres, err := gorm.Open("postgres", conf.PostgresDsn())
+	gormPostgres, err := gorm.Open("postgres", conf.PostgresDSN())
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func NewGormPostgres(conf DBConfig) (*gorm.DB, error) {
 
 // NewGormMsSQL 返回 gorm sqlserver 连接实例
 func NewGormMsSQL(conf DBConfig) (*gorm.DB, error) {
-	gormMssql, err := gorm.Open("mssql", conf.MsSQLDsn())
+	gormMssql, err := gorm.Open("mssql", conf.MsSQLDSN())
 	if err != nil {
 		return nil, err
 	}

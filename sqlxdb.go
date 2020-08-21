@@ -12,7 +12,7 @@ import (
 
 // NewSqlxSQLite3 返回 sqlx sqlite3 连接实例
 func NewSqlxSQLite3(conf DBConfig) (*sqlx.DB, error) {
-	sqlxSqlite3, err := sqlx.Open("sqlite3", conf.SQLite3Dsn())
+	sqlxSqlite3, err := sqlx.Open("sqlite3", conf.SQLite3DSN())
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +24,7 @@ func NewSqlxSQLite3(conf DBConfig) (*sqlx.DB, error) {
 
 // NewSqlxMySQL 返回 sqlx mysql 连接实例
 func NewSqlxMySQL(conf DBConfig) (*sqlx.DB, error) {
-	sqlxMysql, err := sqlx.Open("mysql", conf.MySQLDsn())
+	sqlxMysql, err := sqlx.Open("mysql", conf.MySQLDSN())
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func NewSqlxMySQL(conf DBConfig) (*sqlx.DB, error) {
 
 // NewSqlxPostgres 返回 sqlx postgresql 连接实例
 func NewSqlxPostgres(conf DBConfig) (*sqlx.DB, error) {
-	sqlxPostgres, err := sqlx.Open("postgres", conf.PostgresDsn())
+	sqlxPostgres, err := sqlx.Open("postgres", conf.PostgresDSN())
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func NewSqlxPostgres(conf DBConfig) (*sqlx.DB, error) {
 
 // NewSqlxMsSQL 返回 sqlx sqlserver 连接实例
 func NewSqlxMsSQL(conf DBConfig) (*sqlx.DB, error) {
-	sqlxMssql, err := sqlx.Open("mssql", conf.MsSQLDsn())
+	sqlxMssql, err := sqlx.Open("mssql", conf.MsSQLDSN())
 	if err != nil {
 		return nil, err
 	}
