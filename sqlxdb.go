@@ -3,7 +3,6 @@
 package goutils
 
 import (
-	"fmt"
 	"sync"
 	"time"
 
@@ -12,8 +11,8 @@ import (
 )
 
 // NewSqlxSQLite3 返回 sqlx sqlite3 连接实例
-func NewSqlxSQLite3(conf SQLite3Config) (*sqlx.DB, error) {
-	sqlxSqlite3, err := sqlx.Open("sqlite3", conf.DBName)
+func NewSqlxSQLite3(conf DBConfig) (*sqlx.DB, error) {
+	sqlxSqlite3, err := sqlx.Open("sqlite3", conf.SQLite3Dsn())
 	if err != nil {
 		return nil, err
 	}
@@ -24,9 +23,8 @@ func NewSqlxSQLite3(conf SQLite3Config) (*sqlx.DB, error) {
 }
 
 // NewSqlxMySQL 返回 sqlx mysql 连接实例
-func NewSqlxMySQL(conf MySQLConfig) (*sqlx.DB, error) {
-	dsn := fmt.Sprintf("%s:%s@(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local&timeout=%ds&readTimeout=%ds&writeTimeout=%ds", conf.Username, conf.Password, conf.Host, conf.Port, conf.DBName, conf.ConnTimeout, conf.ReadTimeout, conf.WriteTimeout)
-	sqlxMysql, err := sqlx.Open("mysql", dsn)
+func NewSqlxMySQL(conf DBConfig) (*sqlx.DB, error) {
+	sqlxMysql, err := sqlx.Open("mysql", conf.MySQLDsn())
 	if err != nil {
 		return nil, err
 	}
@@ -37,12 +35,8 @@ func NewSqlxMySQL(conf MySQLConfig) (*sqlx.DB, error) {
 }
 
 // NewSqlxPostgres 返回 sqlx postgresql 连接实例
-func NewSqlxPostgres(conf PostgresConfig) (*sqlx.DB, error) {
-	dsn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s", conf.Host, conf.Port, conf.Username, conf.DBName, conf.Password)
-	if conf.DisableSSL {
-		dsn = dsn + " sslmode=disable"
-	}
-	sqlxPostgres, err := sqlx.Open("postgres", dsn)
+func NewSqlxPostgres(conf DBConfig) (*sqlx.DB, error) {
+	sqlxPostgres, err := sqlx.Open("postgres", conf.PostgresDsn())
 	if err != nil {
 		return nil, err
 	}
@@ -53,9 +47,8 @@ func NewSqlxPostgres(conf PostgresConfig) (*sqlx.DB, error) {
 }
 
 // NewSqlxMsSQL 返回 sqlx sqlserver 连接实例
-func NewSqlxMsSQL(conf MsSQLConfig) (*sqlx.DB, error) {
-	dsn := fmt.Sprintf("sqlserver://%s:%s@%s:%d?database=%s", conf.Username, conf.Password, conf.Host, conf.Port, conf.DBName)
-	sqlxMssql, err := sqlx.Open("mssql", dsn)
+func NewSqlxMsSQL(conf DBConfig) (*sqlx.DB, error) {
+	sqlxMssql, err := sqlx.Open("mssql", conf.MsSQLDsn())
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +74,7 @@ func SqlxMySQL(which string) (*sqlx.DB, error) {
 	// mysql 不存在 或 存在时 which 不存在 则新建 mysql db 实例存放到 map 中
 	// 注意：这里依赖 viper ，必须在外部先对 viper 配置进行加载
 	prefix := "mysql." + which
-	conf := MySQLConfig{
+	conf := DBConfig{
 		Host:               viper.GetString(prefix + ".host"),
 		Port:               viper.GetInt(prefix + ".port"),
 		Username:           viper.GetString(prefix + ".username"),
@@ -112,9 +105,8 @@ func SqlxSQLite3(which string) (*sqlx.DB, error) {
 			return db.(*sqlx.DB), nil
 		}
 	}
-	// mysql 不存在 或 存在时 which 不存在 则新建 mysql db 实例存放到 map 中
 	prefix := "sqlite3." + which
-	conf := SQLite3Config{
+	conf := DBConfig{
 		DBName:             viper.GetString(prefix + ".dbname"),
 		LogMode:            viper.GetBool(prefix + ".log_mode"),
 		MaxIdleConns:       viper.GetInt(prefix + ".max_idle_conns"),
@@ -134,13 +126,12 @@ func SqlxSQLite3(which string) (*sqlx.DB, error) {
 func SqlxPostgres(which string) (*sqlx.DB, error) {
 	pgs, loaded := SqlxInstances.LoadOrStore("postgres", new(sync.Map))
 	if loaded {
-		if db, exsits := pgs.(map[string]interface{})[which]; exsits {
+		if db, loaded := pgs.(*sync.Map).Load(which); loaded {
 			return db.(*sqlx.DB), nil
 		}
 	}
-	// mysql 不存在 或 存在时 which 不存在 则新建 mysql db 实例存放到 map 中
 	prefix := "postgres." + which
-	conf := PostgresConfig{
+	conf := DBConfig{
 		Host:               viper.GetString(prefix + ".host"),
 		Port:               viper.GetInt(prefix + ".port"),
 		Username:           viper.GetString(prefix + ".username"),
@@ -164,13 +155,13 @@ func SqlxPostgres(which string) (*sqlx.DB, error) {
 func SqlxMsSQL(which string) (*sqlx.DB, error) {
 	mssqls, loaded := SqlxInstances.LoadOrStore("mssql", new(sync.Map))
 	if loaded {
-		if db, exsits := mssqls.(map[string]interface{})[which]; exsits {
+		if db, loaded := mssqls.(*sync.Map).Load(which); loaded {
 			return db.(*sqlx.DB), nil
 		}
 	}
 	// mysql 不存在 或 存在时 which 不存在 则新建 mysql db 实例存放到 map 中
 	prefix := "mssql." + which
-	conf := MsSQLConfig{
+	conf := DBConfig{
 		Host:               viper.GetString(prefix + ".host"),
 		Port:               viper.GetInt(prefix + ".port"),
 		Username:           viper.GetString(prefix + ".username"),

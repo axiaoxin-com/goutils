@@ -10,7 +10,7 @@ import (
 
 func TestNewGormSQLite3(t *testing.T) {
 	dbname := "db.sqlite3"
-	conf := SQLite3Config{
+	conf := DBConfig{
 		DBName: dbname,
 	}
 	db, err := NewGormSQLite3(conf)
@@ -25,7 +25,7 @@ func TestNewGormSQLite3(t *testing.T) {
 }
 
 func TestNewGormMySQL(t *testing.T) {
-	conf := MySQLConfig{
+	conf := DBConfig{
 		Host:     "localhost",
 		Port:     3306,
 		Username: "root",

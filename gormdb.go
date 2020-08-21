@@ -3,7 +3,6 @@
 package goutils
 
 import (
-	"fmt"
 	"strings"
 	"sync"
 	"time"
@@ -19,8 +18,8 @@ import (
 )
 
 // NewGormSQLite3 返回 gorm sqlite3 连接实例
-func NewGormSQLite3(conf SQLite3Config) (*gorm.DB, error) {
-	gormSqlite3, err := gorm.Open("sqlite3", conf.DBName)
+func NewGormSQLite3(conf DBConfig) (*gorm.DB, error) {
+	gormSqlite3, err := gorm.Open("sqlite3", conf.SQLite3Dsn())
 	if err != nil {
 		return nil, err
 	}
@@ -32,13 +31,11 @@ func NewGormSQLite3(conf SQLite3Config) (*gorm.DB, error) {
 }
 
 // NewGormMySQL 返回 gorm mysql 连接实例
-func NewGormMySQL(conf MySQLConfig) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("%s:%s@(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local&timeout=%ds&readTimeout=%ds&writeTimeout=%ds", conf.Username, conf.Password, conf.Host, conf.Port, conf.DBName, conf.ConnTimeout, conf.ReadTimeout, conf.WriteTimeout)
-	gormMysql, err := gorm.Open("mysql", dsn)
+func NewGormMySQL(conf DBConfig) (*gorm.DB, error) {
+	gormMysql, err := gorm.Open("mysql", conf.MySQLDsn())
 	if err != nil {
 		return nil, err
 	}
-	gormMysql.Set("gorm:table_options", "ENGINE=InnoDB CHARSET=utf8 auto_increment=1")
 	gormMysql.LogMode(conf.LogMode)
 	gormMysql.DB().SetMaxIdleConns(conf.MaxIdleConns)
 	gormMysql.DB().SetMaxOpenConns(conf.MaxOpenConns)
@@ -47,12 +44,8 @@ func NewGormMySQL(conf MySQLConfig) (*gorm.DB, error) {
 }
 
 // NewGormPostgres 返回 gorm postgresql 连接实例
-func NewGormPostgres(conf PostgresConfig) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s", conf.Host, conf.Port, conf.Username, conf.DBName, conf.Password)
-	if conf.DisableSSL {
-		dsn = dsn + " sslmode=disable"
-	}
-	gormPostgres, err := gorm.Open("postgres", dsn)
+func NewGormPostgres(conf DBConfig) (*gorm.DB, error) {
+	gormPostgres, err := gorm.Open("postgres", conf.PostgresDsn())
 	if err != nil {
 		return nil, err
 	}
@@ -64,9 +57,8 @@ func NewGormPostgres(conf PostgresConfig) (*gorm.DB, error) {
 }
 
 // NewGormMsSQL 返回 gorm sqlserver 连接实例
-func NewGormMsSQL(conf MsSQLConfig) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("sqlserver://%s:%s@%s:%d?database=%s", conf.Username, conf.Password, conf.Host, conf.Port, conf.DBName)
-	gormMssql, err := gorm.Open("mssql", dsn)
+func NewGormMsSQL(conf DBConfig) (*gorm.DB, error) {
+	gormMssql, err := gorm.Open("mssql", conf.MsSQLDsn())
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +97,7 @@ func GormMySQL(which string) (*gorm.DB, error) {
 	// mysql 不存在 或 存在时 which 不存在 则新建 mysql db 实例存放到 map 中
 	// 注意：这里依赖 viper ，必须在外部先对 viper 配置进行加载
 	prefix := "mysql." + which
-	conf := MySQLConfig{
+	conf := DBConfig{
 		Host:               viper.GetString(prefix + ".host"),
 		Port:               viper.GetInt(prefix + ".port"),
 		Username:           viper.GetString(prefix + ".username"),
@@ -136,9 +128,8 @@ func GormSQLite3(which string) (*gorm.DB, error) {
 			return db.(*gorm.DB), nil
 		}
 	}
-	// mysql 不存在 或 存在时 which 不存在 则新建 mysql db 实例存放到 map 中
 	prefix := "sqlite3." + which
-	conf := SQLite3Config{
+	conf := DBConfig{
 		DBName:             viper.GetString(prefix + ".dbname"),
 		LogMode:            viper.GetBool(prefix + ".log_mode"),
 		MaxIdleConns:       viper.GetInt(prefix + ".max_idle_conns"),
@@ -158,13 +149,12 @@ func GormSQLite3(which string) (*gorm.DB, error) {
 func GormPostgres(which string) (*gorm.DB, error) {
 	pgs, loaded := GormInstances.LoadOrStore("postgres", new(sync.Map))
 	if loaded {
-		if db, exsits := pgs.(map[string]interface{})[which]; exsits {
+		if db, loaded := pgs.(*sync.Map).Load(which); loaded {
 			return db.(*gorm.DB), nil
 		}
 	}
-	// mysql 不存在 或 存在时 which 不存在 则新建 mysql db 实例存放到 map 中
 	prefix := "postgres." + which
-	conf := PostgresConfig{
+	conf := DBConfig{
 		Host:               viper.GetString(prefix + ".host"),
 		Port:               viper.GetInt(prefix + ".port"),
 		Username:           viper.GetString(prefix + ".username"),
@@ -188,13 +178,12 @@ func GormPostgres(which string) (*gorm.DB, error) {
 func GormMsSQL(which string) (*gorm.DB, error) {
 	mssqls, loaded := GormInstances.LoadOrStore("mssql", new(sync.Map))
 	if loaded {
-		if db, exsits := mssqls.(map[string]interface{})[which]; exsits {
+		if db, loaded := mssqls.(*sync.Map).Load(which); loaded {
 			return db.(*gorm.DB), nil
 		}
 	}
-	// mysql 不存在 或 存在时 which 不存在 则新建 mysql db 实例存放到 map 中
 	prefix := "mssql." + which
-	conf := MsSQLConfig{
+	conf := DBConfig{
 		Host:               viper.GetString(prefix + ".host"),
 		Port:               viper.GetInt(prefix + ".port"),
 		Username:           viper.GetString(prefix + ".username"),
