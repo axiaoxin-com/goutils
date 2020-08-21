@@ -31,7 +31,10 @@ func TestJSONTime(t *testing.T) {
 
 func TestJSONTimeInGORM(t *testing.T) {
 	dbname := "./db.jsontime"
-	db, err := NewGormSQLite3(dbname, false, 10, 10, 10)
+	conf := SQLite3Config{
+		DBName: dbname,
+	}
+	db, err := NewGormSQLite3(conf)
 	if err != nil {
 		t.Fatal("new test db return error:", err)
 	}

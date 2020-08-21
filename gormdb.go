@@ -17,97 +17,61 @@ import (
 )
 
 // NewGormSQLite3 返回 gorm sqlite3 连接实例
-// dbname 数据库文件名（含路径）
-// logMode 是否开启打印日志模式
-// maxIdleConns 设置空闲连接池中的最大连接数
-// maxOpenConns 设置与数据库的最大打开连接数
-// connMaxLifeMinutes 设置可重用连接的最长时间（分钟）
-func NewGormSQLite3(dbname string, logMode bool, maxIdleConns, maxOpenConns, connMaxLifeMinutes int) (*gorm.DB, error) {
-	gormSqlite3, err := gorm.Open("sqlite3", dbname)
+func NewGormSQLite3(conf SQLite3Config) (*gorm.DB, error) {
+	gormSqlite3, err := gorm.Open("sqlite3", conf.DBName)
 	if err != nil {
 		return nil, err
 	}
-	gormSqlite3.LogMode(logMode)
-	gormSqlite3.DB().SetMaxIdleConns(maxIdleConns)                                       // 设置连接池中的最大闲置连接数
-	gormSqlite3.DB().SetMaxOpenConns(maxOpenConns)                                       // 设置数据库的最大连接数量
-	gormSqlite3.DB().SetConnMaxLifetime(time.Duration(connMaxLifeMinutes) * time.Minute) // 设置连接的最大可复用时间
+	gormSqlite3.LogMode(conf.LogMode)
+	gormSqlite3.DB().SetMaxIdleConns(conf.MaxIdleConns)
+	gormSqlite3.DB().SetMaxOpenConns(conf.MaxOpenConns)
+	gormSqlite3.DB().SetConnMaxLifetime(time.Duration(conf.ConnMaxLifeMinutes) * time.Minute)
 	return gormSqlite3, nil
 }
 
 // NewGormMySQL 返回 gorm mysql 连接实例
-// host 数据库 IP 地址
-// port 数据库端口
-// dbname 数据库名称
-// usename 数据库用户名
-// password 数据库密码
-// logMode 是否开启打印日志模式
-// maxIdleConns 设置空闲连接池中的最大连接数
-// maxOpenConns 设置与数据库的最大打开连接数
-// connMaxLifeMinutes 设置可重用连接的最长时间（分钟）
-// connTimeout 连接超时时间（秒）
-// readTimeout 读超时时间（秒）
-// writeTimeout 写超时时间（秒）
-func NewGormMySQL(host string, port int, username, password, dbname string, logMode bool, maxIdleConns, maxOpenConns, connMaxLifeMinutes, connTimeout, readTimeout, writeTimeout int) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("%s:%s@(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local&timeout=%ds&readTimeout=%ds&writeTimeout=%ds", username, password, host, port, dbname, connTimeout, readTimeout, writeTimeout)
+func NewGormMySQL(conf MySQLConfig) (*gorm.DB, error) {
+	dsn := fmt.Sprintf("%s:%s@(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local&timeout=%ds&readTimeout=%ds&writeTimeout=%ds", conf.Username, conf.Password, conf.Host, conf.Port, conf.DBName, conf.ConnTimeout, conf.ReadTimeout, conf.WriteTimeout)
 	gormMysql, err := gorm.Open("mysql", dsn)
 	if err != nil {
 		return nil, err
 	}
 	gormMysql.Set("gorm:table_options", "ENGINE=InnoDB CHARSET=utf8 auto_increment=1")
-	gormMysql.LogMode(logMode)
-	gormMysql.DB().SetMaxIdleConns(maxIdleConns)                                       // 设置连接池中的最大闲置连接数
-	gormMysql.DB().SetMaxOpenConns(maxOpenConns)                                       // 设置数据库的最大连接数量
-	gormMysql.DB().SetConnMaxLifetime(time.Duration(connMaxLifeMinutes) * time.Minute) // 设置连接的最大可复用时间
+	gormMysql.LogMode(conf.LogMode)
+	gormMysql.DB().SetMaxIdleConns(conf.MaxIdleConns)
+	gormMysql.DB().SetMaxOpenConns(conf.MaxOpenConns)
+	gormMysql.DB().SetConnMaxLifetime(time.Duration(conf.ConnMaxLifeMinutes) * time.Minute)
 	return gormMysql, nil
 }
 
 // NewGormPostgres 返回 gorm postgresql 连接实例
-// host 数据库 IP 地址
-// port 数据库端口
-// dbname 数据库名称
-// usename 数据库用户名
-// password 数据库密码
-// disableSSL 是否关闭 ssl 模式
-// logMode 是否开启打印日志模式
-// maxIdleConns 设置空闲连接池中的最大连接数
-// maxOpenConns 设置与数据库的最大打开连接数
-// connMaxLifeMinutes 设置可重用连接的最长时间（分钟）
-func NewGormPostgres(host string, port int, username, password, dbname string, disableSSL, logMode bool, maxIdleConns, maxOpenConns, connMaxLifeMinutes int) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s", host, port, username, dbname, password)
-	if disableSSL {
+func NewGormPostgres(conf PostgresConfig) (*gorm.DB, error) {
+	dsn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s", conf.Host, conf.Port, conf.Username, conf.DBName, conf.Password)
+	if conf.DisableSSL {
 		dsn = dsn + " sslmode=disable"
 	}
 	gormPostgres, err := gorm.Open("postgres", dsn)
 	if err != nil {
 		return nil, err
 	}
-	gormPostgres.LogMode(logMode)
-	gormPostgres.DB().SetMaxIdleConns(maxIdleConns)                                       // 设置连接池中的最大闲置连接数
-	gormPostgres.DB().SetMaxOpenConns(maxOpenConns)                                       // 设置数据库的最大连接数量
-	gormPostgres.DB().SetConnMaxLifetime(time.Duration(connMaxLifeMinutes) * time.Minute) // 设置连接的最大可复用时间
+	gormPostgres.LogMode(conf.LogMode)
+	gormPostgres.DB().SetMaxIdleConns(conf.MaxIdleConns)
+	gormPostgres.DB().SetMaxOpenConns(conf.MaxOpenConns)
+	gormPostgres.DB().SetConnMaxLifetime(time.Duration(conf.ConnMaxLifeMinutes) * time.Minute)
 	return gormPostgres, nil
 }
 
 // NewGormMsSQL 返回 gorm sqlserver 连接实例
-// host 数据库 IP 地址
-// port 数据库端口
-// dbname 数据库名称
-// usename 数据库用户名
-// password 数据库密码
-// logMode 是否开启打印日志模式
-// maxIdleConns 设置空闲连接池中的最大连接数
-// maxOpenConns 设置与数据库的最大打开连接数
-// connMaxLifeMinutes 设置可重用连接的最长时间（分钟）
-func NewGormMsSQL(host string, port int, username, password, dbname string, logMode bool, maxIdleConns, maxOpenConns, connMaxLifeMinutes int) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("sqlserver://%s:%s@%s:%d?database=%s", username, password, host, port, dbname)
+func NewGormMsSQL(conf MsSQLConfig) (*gorm.DB, error) {
+	dsn := fmt.Sprintf("sqlserver://%s:%s@%s:%d?database=%s", conf.Username, conf.Password, conf.Host, conf.Port, conf.DBName)
 	gormMssql, err := gorm.Open("mssql", dsn)
 	if err != nil {
 		return nil, err
 	}
-	gormMssql.LogMode(logMode)
-	gormMssql.DB().SetMaxIdleConns(maxIdleConns)                                       // 设置连接池中的最大闲置连接数
-	gormMssql.DB().SetMaxOpenConns(maxOpenConns)                                       // 设置数据库的最大连接数量
-	gormMssql.DB().SetConnMaxLifetime(time.Duration(connMaxLifeMinutes) * time.Minute) // 设置连接的最大可复用时间
+	gormMssql.LogMode(conf.LogMode)
+	gormMssql.DB().SetMaxIdleConns(conf.MaxIdleConns)
+	gormMssql.DB().SetMaxOpenConns(conf.MaxOpenConns)
+	gormMssql.DB().SetConnMaxLifetime(time.Duration(conf.ConnMaxLifeMinutes) * time.Minute)
 	return gormMssql, nil
 }
 

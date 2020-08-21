@@ -7,7 +7,10 @@ import (
 
 func TestNewSqlxQLite3(t *testing.T) {
 	dbname := "./db.sqlite3"
-	db, err := NewSqlxSQLite3(dbname, 10, 10, 10)
+	conf := SQLite3Config{
+		DBName: dbname,
+	}
+	db, err := NewSqlxSQLite3(conf)
 	if err != nil {
 		t.Error("new sqlx sqlite3 return error:", err)
 	}
@@ -16,7 +19,14 @@ func TestNewSqlxQLite3(t *testing.T) {
 }
 
 func TestNewSqlxMySQL(t *testing.T) {
-	db, err := NewSqlxMySQL("localhost", 3306, "root", "roooooot", "information_schema", 10, 10, 10, 3, 3, 3)
+	conf := MySQLConfig{
+		Host:     "localhost",
+		Port:     3306,
+		Username: "root",
+		Password: "roooooot",
+		DBName:   "information_schema",
+	}
+	db, err := NewSqlxMySQL(conf)
 	if err != nil {
 		t.Error("new sqlx mysql return error:", err)
 	}

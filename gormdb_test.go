@@ -7,7 +7,10 @@ import (
 
 func TestNewGormSQLite3(t *testing.T) {
 	dbname := "./db.sqlite3"
-	db, err := NewGormSQLite3(dbname, false, 10, 10, 10)
+	conf := SQLite3Config{
+		DBName: dbname,
+	}
+	db, err := NewGormSQLite3(conf)
 	if err != nil {
 		t.Error("new gorm sqlite3 return error:", err)
 	}
@@ -16,7 +19,14 @@ func TestNewGormSQLite3(t *testing.T) {
 }
 
 func TestNewGormMySQL(t *testing.T) {
-	db, err := NewGormMySQL("localhost", 3306, "root", "roooooot", "information_schema", false, 10, 10, 10, 3, 5, 5)
+	conf := MySQLConfig{
+		Host:     "localhost",
+		Port:     3306,
+		Username: "root",
+		Password: "roooooot",
+		DBName:   "information_schema",
+	}
+	db, err := NewGormMySQL(conf)
 	if err != nil {
 		t.Error("new gorm mysql return error:", err)
 	}
