@@ -5,9 +5,11 @@ package goutils
 import (
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/jinzhu/gorm"
+	"github.com/spf13/viper"
 
 	// need by gorm
 	_ "github.com/jinzhu/gorm/dialects/mssql"
@@ -75,8 +77,8 @@ func NewGormMsSQL(conf MsSQLConfig) (*gorm.DB, error) {
 	return gormMssql, nil
 }
 
-// GormMySQLLikeFieldEscape 转义 Gorm MySQL 的 like 模糊查询时字段值为通配符的值
-func GormMySQLLikeFieldEscape(value string) string {
+// LikeFieldEscape 转义 SQL 的 like 模糊查询时字段值为通配符的值
+func LikeFieldEscape(value string) string {
 	value = strings.Replace(value, ";", "\\;", -1)
 	value = strings.Replace(value, "\"", "\\\"", -1)
 	value = strings.Replace(value, "'", "\\'", -1)
@@ -85,4 +87,145 @@ func GormMySQLLikeFieldEscape(value string) string {
 	value = strings.Replace(value, "%", "\\%", -1)
 	value = strings.Replace(value, "_", "\\_", -1)
 	return value
+}
+
+// GormInstances 以 sync.Map 保存 gorm db 相关信息
+// key 为小写的数据库驱动名称， value 为实例名为 key ， 具体的 db 对象为 value 的 普通 map
+// 形如： {"mysql": {"localhost": db}, "postgres": {"localhost": db}}
+var GormInstances sync.Map
+
+// GormMySQL 根据实例名称返回 gorm 连接 mysql 的实例
+func GormMySQL(which string) (*gorm.DB, error) {
+	mysqls, loaded := GormInstances.LoadOrStore("mysql", new(sync.Map))
+	if loaded {
+		if db, loaded := mysqls.(*sync.Map).Load(which); loaded {
+			return db.(*gorm.DB), nil
+		}
+	}
+	// mysql 不存在 或 存在时 which 不存在 则新建 mysql db 实例存放到 map 中
+	// 注意：这里依赖 viper ，必须在外部先对 viper 配置进行加载
+	prefix := "mysql." + which
+	conf := MySQLConfig{
+		Host:               viper.GetString(prefix + ".host"),
+		Port:               viper.GetInt(prefix + ".port"),
+		Username:           viper.GetString(prefix + ".username"),
+		Password:           viper.GetString(prefix + ".password"),
+		DBName:             viper.GetString(prefix + ".dbname"),
+		LogMode:            viper.GetBool(prefix + ".log_mode"),
+		MaxIdleConns:       viper.GetInt(prefix + ".max_idle_conns"),
+		MaxOpenConns:       viper.GetInt(prefix + ".max_open_conns"),
+		ConnMaxLifeMinutes: viper.GetInt(prefix + ".conn_max_life_minutes"),
+		ConnTimeout:        viper.GetInt(prefix + ".conn_timeout"),
+		ReadTimeout:        viper.GetInt(prefix + ".read_timeout"),
+		WriteTimeout:       viper.GetInt(prefix + ".write_timeout"),
+	}
+	db, err := NewGormMySQL(conf)
+	if err != nil {
+		return nil, err
+	}
+	mysqls.(*sync.Map).Store(which, db)
+	GormInstances.Store("mysql", mysqls)
+	return db, nil
+}
+
+// GormSQLite3 根据 instance 名称返回 sqlite3 实例
+func GormSQLite3(which string) (*gorm.DB, error) {
+	sqlite3s, loaded := GormInstances.LoadOrStore("sqlite3", new(sync.Map))
+	if loaded {
+		if db, loaded := sqlite3s.(*sync.Map).Load(which); loaded {
+			return db.(*gorm.DB), nil
+		}
+	}
+	// mysql 不存在 或 存在时 which 不存在 则新建 mysql db 实例存放到 map 中
+	prefix := "sqlite3." + which
+	conf := SQLite3Config{
+		DBName:             viper.GetString(prefix + ".dbname"),
+		LogMode:            viper.GetBool(prefix + ".log_mode"),
+		MaxIdleConns:       viper.GetInt(prefix + ".max_idle_conns"),
+		MaxOpenConns:       viper.GetInt(prefix + ".max_open_conns"),
+		ConnMaxLifeMinutes: viper.GetInt(prefix + ".conn_max_life_minutes"),
+	}
+	db, err := NewGormSQLite3(conf)
+	if err != nil {
+		return nil, err
+	}
+	sqlite3s.(*sync.Map).Store(which, db)
+	GormInstances.Store("sqlite3", sqlite3s)
+	return db, nil
+}
+
+// GormPostgres 根据实例名称返回 pg 实例
+func GormPostgres(which string) (*gorm.DB, error) {
+	pgs, loaded := GormInstances.LoadOrStore("postgres", new(sync.Map))
+	if loaded {
+		if db, exsits := pgs.(map[string]interface{})[which]; exsits {
+			return db.(*gorm.DB), nil
+		}
+	}
+	// mysql 不存在 或 存在时 which 不存在 则新建 mysql db 实例存放到 map 中
+	prefix := "postgres." + which
+	conf := PostgresConfig{
+		Host:               viper.GetString(prefix + ".host"),
+		Port:               viper.GetInt(prefix + ".port"),
+		Username:           viper.GetString(prefix + ".username"),
+		Password:           viper.GetString(prefix + ".password"),
+		DBName:             viper.GetString(prefix + ".dbname"),
+		LogMode:            viper.GetBool(prefix + ".log_mode"),
+		MaxIdleConns:       viper.GetInt(prefix + ".max_idle_conns"),
+		MaxOpenConns:       viper.GetInt(prefix + ".max_open_conns"),
+		ConnMaxLifeMinutes: viper.GetInt(prefix + ".conn_max_life_minutes"),
+	}
+	db, err := NewGormPostgres(conf)
+	if err != nil {
+		return nil, err
+	}
+	pgs.(*sync.Map).Store(which, db)
+	GormInstances.Store("postgres", pgs)
+	return db, nil
+}
+
+// GormMsSQL 根据实例名称返回 sqlserver 实例
+func GormMsSQL(which string) (*gorm.DB, error) {
+	mssqls, loaded := GormInstances.LoadOrStore("mssql", new(sync.Map))
+	if loaded {
+		if db, exsits := mssqls.(map[string]interface{})[which]; exsits {
+			return db.(*gorm.DB), nil
+		}
+	}
+	// mysql 不存在 或 存在时 which 不存在 则新建 mysql db 实例存放到 map 中
+	prefix := "mssql." + which
+	conf := MsSQLConfig{
+		Host:               viper.GetString(prefix + ".host"),
+		Port:               viper.GetInt(prefix + ".port"),
+		Username:           viper.GetString(prefix + ".username"),
+		Password:           viper.GetString(prefix + ".password"),
+		DBName:             viper.GetString(prefix + ".dbname"),
+		LogMode:            viper.GetBool(prefix + ".log_mode"),
+		MaxIdleConns:       viper.GetInt(prefix + ".max_idle_conns"),
+		MaxOpenConns:       viper.GetInt(prefix + ".max_open_conns"),
+		ConnMaxLifeMinutes: viper.GetInt(prefix + ".conn_max_life_minutes"),
+	}
+	db, err := NewGormMsSQL(conf)
+	if err != nil {
+		return nil, err
+	}
+	mssqls.(*sync.Map).Store(which, db)
+	GormInstances.Store("mssql", mssqls)
+	return db, nil
+}
+
+// CloseGormInstances 关闭全部的 Gorm 连接并重置 GormInstances
+func CloseGormInstances() {
+	GormInstances.Range(func(ik, iv interface{}) bool {
+		if m, ok := iv.(*sync.Map); ok {
+			m.Range(func(k, v interface{}) bool {
+				if db, ok := v.(*gorm.DB); ok {
+					db.Close()
+				}
+				return true
+			})
+		}
+		return true
+	})
+	GormInstances = sync.Map{}
 }
