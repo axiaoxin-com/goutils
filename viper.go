@@ -12,7 +12,7 @@ import (
 // configName 配置文件名（不带格式后缀）
 // configType 配置文件格式后缀
 // onConfigChangeRun 配置文件发生变化时的回调函数
-func InitViper(configPath, configName, configType string, onConfigChangeRun func(in fsnotify.Event)) error {
+func InitViper(configPath, configName, configType string, onConfigChangeRun func(fsnotify.Event)) error {
 	viper.AddConfigPath(configPath)
 	viper.SetConfigName(configName)
 	viper.SetConfigType(configType)

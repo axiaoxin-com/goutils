@@ -8,7 +8,7 @@ import (
 
 func TestNewGinEngine(t *testing.T) {
 	GinPprofURLPath = "/x/test/pprof"
-	router := NewGinEngine(gin.DebugMode, true)
+	router := NewGinEngine(gin.ReleaseMode, true)
 	if router == nil {
 		t.Error("new a nil gin engine")
 	}
