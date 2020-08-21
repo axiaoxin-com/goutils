@@ -17,6 +17,13 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
+// GormBaseModel 基础 model 定义
+type GormBaseModel struct {
+	ID        string   `gorm:"primary_key,column:id" json:"id" example:"-"`     // 字符串类型的 Hash 主键 ID
+	CreatedAt JSONTime `gorm:"column:created_at" json:"created_at" example:"-"` // 创建时间
+	UpdatedAt JSONTime `gorm:"column:updated_at" json:"updated_at" example:"-"` // 更新时间
+}
+
 // NewGormSQLite3 返回 gorm sqlite3 连接实例
 func NewGormSQLite3(conf DBConfig) (*gorm.DB, error) {
 	gormSqlite3, err := gorm.Open("sqlite3", conf.SQLite3DSN())
