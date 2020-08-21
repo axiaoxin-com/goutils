@@ -90,7 +90,7 @@ func LikeFieldEscape(value string) string {
 }
 
 // GormInstances 以 sync.Map 保存 gorm db 相关信息
-// key 为小写的数据库驱动名称， value 为实例名为 key ， 具体的 db 对象为 value 的 普通 map
+// key 为小写的数据库驱动名称， value 为实例名为 key ， 具体的 db 对象为 value 的 sync.Map
 // 形如： {"mysql": {"localhost": db}, "postgres": {"localhost": db}}
 var GormInstances sync.Map
 
