@@ -93,7 +93,7 @@ func LikeFieldEscape(value string) string {
 // 形如： {"mysql": {"localhost": db}, "postgres": {"localhost": db}}
 var GormInstances sync.Map
 
-// GormMySQL 根据实例名称返回 gorm 连接 mysql 的实例
+// GormMySQL 根据 viper 配置中的实例名称返回 gorm 连接 mysql 的实例
 func GormMySQL(which string) (*gorm.DB, error) {
 	mysqls, loaded := GormInstances.LoadOrStore("mysql", new(sync.Map))
 	if loaded {
@@ -127,7 +127,7 @@ func GormMySQL(which string) (*gorm.DB, error) {
 	return db, nil
 }
 
-// GormSQLite3 根据 instance 名称返回 sqlite3 实例
+// GormSQLite3 根据  viper 配置中的实例名称返回 sqlite3 实例
 func GormSQLite3(which string) (*gorm.DB, error) {
 	sqlite3s, loaded := GormInstances.LoadOrStore("sqlite3", new(sync.Map))
 	if loaded {
@@ -152,7 +152,7 @@ func GormSQLite3(which string) (*gorm.DB, error) {
 	return db, nil
 }
 
-// GormPostgres 根据实例名称返回 pg 实例
+// GormPostgres 根据 viper 配置中的实例名称返回 pg 实例
 func GormPostgres(which string) (*gorm.DB, error) {
 	pgs, loaded := GormInstances.LoadOrStore("postgres", new(sync.Map))
 	if loaded {
@@ -182,7 +182,7 @@ func GormPostgres(which string) (*gorm.DB, error) {
 	return db, nil
 }
 
-// GormMsSQL 根据实例名称返回 sqlserver 实例
+// GormMsSQL 根据 viper 配置中的实例名称返回 sqlserver 实例
 func GormMsSQL(which string) (*gorm.DB, error) {
 	mssqls, loaded := GormInstances.LoadOrStore("mssql", new(sync.Map))
 	if loaded {

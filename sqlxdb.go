@@ -63,7 +63,7 @@ func NewSqlxMsSQL(conf DBConfig) (*sqlx.DB, error) {
 // 形如： {"mysql": {"localhost": db}, "postgres": {"localhost": db}}
 var SqlxInstances sync.Map
 
-// SqlxMySQL 根据实例名称返回 sqlx 连接 mysql 的实例
+// SqlxMySQL 根据 viper 中配置的实例名称返回 sqlx 连接 mysql 的实例
 func SqlxMySQL(which string) (*sqlx.DB, error) {
 	mysqls, loaded := SqlxInstances.LoadOrStore("mysql", new(sync.Map))
 	if loaded {
@@ -97,7 +97,7 @@ func SqlxMySQL(which string) (*sqlx.DB, error) {
 	return db, nil
 }
 
-// SqlxSQLite3 根据 instance 名称返回 sqlite3 实例
+// SqlxSQLite3 根据  viper 中配置的实例名称返回 sqlite3 实例
 func SqlxSQLite3(which string) (*sqlx.DB, error) {
 	sqlite3s, loaded := SqlxInstances.LoadOrStore("sqlite3", new(sync.Map))
 	if loaded {
@@ -122,7 +122,7 @@ func SqlxSQLite3(which string) (*sqlx.DB, error) {
 	return db, nil
 }
 
-// SqlxPostgres 根据实例名称返回 pg 实例
+// SqlxPostgres 根据 viper 中配置的实例名称返回 pg 实例
 func SqlxPostgres(which string) (*sqlx.DB, error) {
 	pgs, loaded := SqlxInstances.LoadOrStore("postgres", new(sync.Map))
 	if loaded {
@@ -152,7 +152,7 @@ func SqlxPostgres(which string) (*sqlx.DB, error) {
 	return db, nil
 }
 
-// SqlxMsSQL 根据实例名称返回 sqlserver 实例
+// SqlxMsSQL 根据 viper 中配置的实例名称返回 sqlserver 实例
 func SqlxMsSQL(which string) (*sqlx.DB, error) {
 	mssqls, loaded := SqlxInstances.LoadOrStore("mssql", new(sync.Map))
 	if loaded {
