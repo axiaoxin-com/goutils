@@ -141,6 +141,7 @@ func SqlxPostgres(which string) (*sqlx.DB, error) {
 		MaxIdleConns:       viper.GetInt(prefix + ".max_idle_conns"),
 		MaxOpenConns:       viper.GetInt(prefix + ".max_open_conns"),
 		ConnMaxLifeMinutes: viper.GetInt(prefix + ".conn_max_life_minutes"),
+		DisableSSL:         viper.GetBool(prefix + ".disable_ssl"),
 	}
 	db, err := NewSqlxPostgres(conf)
 	if err != nil {
