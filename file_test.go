@@ -6,8 +6,8 @@ import (
 )
 
 func TestCopyFile(t *testing.T) {
-	srcFilename := "viper_test.json"
-	dstFilename := "viper_test.json.bak"
+	srcFilename := "README.md"
+	dstFilename := "README.md.bak"
 	if err := CopyFile(srcFilename, dstFilename); err != nil {
 		t.Fatal("copy file err:", err)
 	}

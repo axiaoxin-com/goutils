@@ -12,11 +12,11 @@ func TestInitViper(t *testing.T) {
 	onConfigChangeRun := func(e fsnotify.Event) {
 		t.Log("run when config file is changed")
 	}
-	if err := InitViper(".", "viper_test", "json", onConfigChangeRun); err != nil {
+	if err := InitViper(".", "viper.webapp", "toml", onConfigChangeRun); err != nil {
 		t.Error("init viper return error:", err)
 	}
-	if id := viper.GetString("id"); id != "0001" {
-		t.Error("viper should get id=0001, now id:", id)
+	if viper.GetString("env") == "" {
+		t.Error("viper should get env value")
 	}
 	if !IsInitedViper() {
 		t.Error("viper inited should return true")
@@ -31,5 +31,13 @@ func TestInitViperNXFile(t *testing.T) {
 	}
 	if IsInitedViper() {
 		t.Error("viper inited should return false")
+	}
+}
+
+func TestInitWebAppViperConfig(t *testing.T) {
+	defer viper.Reset()
+	InitWebAppViperConfig()
+	if viper.GetString("server.addr") == "" {
+		t.Error("webapp config init failed")
 	}
 }
