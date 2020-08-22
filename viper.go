@@ -19,9 +19,15 @@ func InitViper(configPath, configName, configType string, onConfigChangeRun func
 	if err := viper.ReadInConfig(); err != nil {
 		return err
 	}
+	viper.SetDefault("viper.inited", true)
 	viper.WatchConfig()
 	if onConfigChangeRun != nil {
 		viper.OnConfigChange(onConfigChangeRun)
 	}
 	return nil
+}
+
+// IsInitedViper 返回 viper 是否已初始化
+func IsInitedViper() bool {
+	return viper.GetBool("viper.inited")
 }
