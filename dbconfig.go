@@ -1,6 +1,9 @@
 package goutils
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 // DBConfig 数据库配置
 type DBConfig struct {
@@ -35,25 +38,40 @@ type DBConfig struct {
 }
 
 // MySQLDSN 返回 Mysql dsn 字符串
-func (conf DBConfig) MySQLDSN() string {
-	return fmt.Sprintf("%s:%s@(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local&timeout=%ds&readTimeout=%ds&writeTimeout=%ds", conf.Username, conf.Password, conf.Host, conf.Port, conf.DBName, conf.ConnTimeout, conf.ReadTimeout, conf.WriteTimeout)
+func (conf DBConfig) MySQLDSN() (string, error) {
+	if conf.Username == "" || conf.Host == "" || conf.Port == 0 || conf.DBName == "" {
+		return "", errors.New("DBConfig for MySQL is empty")
+	}
+
+	return fmt.Sprintf("%s:%s@(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local&timeout=%ds&readTimeout=%ds&writeTimeout=%ds", conf.Username, conf.Password, conf.Host, conf.Port, conf.DBName, conf.ConnTimeout, conf.ReadTimeout, conf.WriteTimeout), nil
 }
 
 // SQLite3DSN 返回 sqlite3 文件名
-func (conf DBConfig) SQLite3DSN() string {
-	return conf.DBName
+func (conf DBConfig) SQLite3DSN() (string, error) {
+	if conf.DBName == "" {
+		return "", errors.New("DBConfig for SQLite3 is empty")
+	}
+
+	return conf.DBName, nil
 }
 
 // PostgresDSN 返回 postgres dns 字符串
-func (conf DBConfig) PostgresDSN() string {
+func (conf DBConfig) PostgresDSN() (string, error) {
+	if conf.Host == "" || conf.Port == 0 || conf.Username == "" || conf.DBName == "" {
+		return "", errors.New("DBConfig for Postgres is empty")
+	}
+
 	dsn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s", conf.Host, conf.Port, conf.Username, conf.DBName, conf.Password)
 	if conf.DisableSSL {
 		dsn = dsn + " sslmode=disable"
 	}
-	return dsn
+	return dsn, nil
 }
 
 // MsSQLDSN 返回 mssql dns 字符串
-func (conf DBConfig) MsSQLDSN() string {
-	return fmt.Sprintf("sqlserver://%s:%s@%s:%d?database=%s", conf.Username, conf.Password, conf.Host, conf.Port, conf.DBName)
+func (conf DBConfig) MsSQLDSN() (string, error) {
+	if conf.Host == "" || conf.Port == 0 || conf.Username == "" || conf.DBName == "" {
+		return "", errors.New("DBConfig for MsSQL is empty")
+	}
+	return fmt.Sprintf("sqlserver://%s:%s@%s:%d?database=%s", conf.Username, conf.Password, conf.Host, conf.Port, conf.DBName), nil
 }
