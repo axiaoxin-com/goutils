@@ -43,11 +43,12 @@ func TestNewSqlxMySQL(t *testing.T) {
 }
 
 func TestSqlxMySQL(t *testing.T) {
-	viper.SetDefault("mysql.unittest.host", "127.0.0.1")
-	viper.SetDefault("mysql.unittest.port", 3306)
-	viper.SetDefault("mysql.unittest.username", "root")
-	viper.SetDefault("mysql.unittest.password", "roooooot")
-	viper.SetDefault("mysql.unittest.dbname", "information_schema")
+	defer viper.Reset()
+	viper.Set("mysql.unittest.host", "127.0.0.1")
+	viper.Set("mysql.unittest.port", 3306)
+	viper.Set("mysql.unittest.username", "root")
+	viper.Set("mysql.unittest.password", "roooooot")
+	viper.Set("mysql.unittest.dbname", "information_schema")
 	if db, err := SqlxMySQL("unittest"); err != nil {
 		t.Fatal(err)
 	} else if db == nil {
@@ -59,11 +60,11 @@ func TestSqlxMySQL(t *testing.T) {
 	if _, err := SqlxMySQL("unittest"); err != nil {
 		t.Error(err)
 	}
-	viper.SetDefault("mysql.localhost.host", "127.0.0.1")
-	viper.SetDefault("mysql.localhost.port", 3306)
-	viper.SetDefault("mysql.localhost.username", "root")
-	viper.SetDefault("mysql.localhost.password", "roooooot")
-	viper.SetDefault("mysql.localhost.dbname", "information_schema")
+	viper.Set("mysql.localhost.host", "127.0.0.1")
+	viper.Set("mysql.localhost.port", 3306)
+	viper.Set("mysql.localhost.username", "root")
+	viper.Set("mysql.localhost.password", "roooooot")
+	viper.Set("mysql.localhost.dbname", "information_schema")
 	if _, err := SqlxMySQL("localhost"); err != nil {
 		t.Error(err)
 	}
@@ -88,8 +89,9 @@ func TestSqlxMySQL(t *testing.T) {
 }
 
 func TestSqlxSQLite3(t *testing.T) {
+	defer viper.Reset()
 	dbname := "db.sqlite3"
-	viper.SetDefault("sqlite3.unittest.dbname", dbname)
+	viper.Set("sqlite3.unittest.dbname", dbname)
 	if db, err := SqlxSQLite3("unittest"); err != nil {
 		t.Fatal(err)
 	} else if db == nil {
@@ -102,7 +104,7 @@ func TestSqlxSQLite3(t *testing.T) {
 	if _, err := SqlxSQLite3("unittest"); err != nil {
 		t.Error(err)
 	}
-	viper.SetDefault("sqlite3.other.dbname", "other."+dbname)
+	viper.Set("sqlite3.other.dbname", "other."+dbname)
 	if _, err := SqlxSQLite3("other"); err != nil {
 		t.Error(err)
 	}
@@ -128,11 +130,12 @@ func TestSqlxSQLite3(t *testing.T) {
 }
 
 func TestCloseSqlxInstances(t *testing.T) {
-	viper.SetDefault("mysql.unittest.host", "127.0.0.1")
-	viper.SetDefault("mysql.unittest.port", 3306)
-	viper.SetDefault("mysql.unittest.username", "root")
-	viper.SetDefault("mysql.unittest.password", "roooooot")
-	viper.SetDefault("mysql.unittest.dbname", "information_schema")
+	defer viper.Reset()
+	viper.Set("mysql.unittest.host", "127.0.0.1")
+	viper.Set("mysql.unittest.port", 3306)
+	viper.Set("mysql.unittest.username", "root")
+	viper.Set("mysql.unittest.password", "roooooot")
+	viper.Set("mysql.unittest.dbname", "information_schema")
 	if db, err := SqlxMySQL("unittest"); err != nil {
 		t.Fatal(err)
 	} else if db == nil {
@@ -144,7 +147,7 @@ func TestCloseSqlxInstances(t *testing.T) {
 		t.Error("mysql should be loaded")
 	}
 	dbname := "db.sqlite3"
-	viper.SetDefault("sqlite3.unittest.dbname", dbname)
+	viper.Set("sqlite3.unittest.dbname", dbname)
 	if db, err := SqlxSQLite3("unittest"); err != nil {
 		t.Fatal(err)
 	} else if db == nil {

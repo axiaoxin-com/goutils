@@ -19,13 +19,14 @@ func TestNewRedisClient(t *testing.T) {
 }
 
 func TestRedisClient(t *testing.T) {
-	viper.SetDefault("redis.localhost.addr", "127.0.0.1:6379")
-	viper.SetDefault("redis.localhost.password", "")
-	viper.SetDefault("redis.localhost.db", 0)
-	viper.SetDefault("redis.localhost.dial_timeout", 5)
-	viper.SetDefault("redis.localhost.read_timeout", 3)
-	viper.SetDefault("redis.localhost.write_timeout", 3)
-	viper.SetDefault("redis.localhost.pool_size", 0)
+	defer viper.Reset()
+	viper.Set("redis.localhost.addr", "127.0.0.1:6379")
+	viper.Set("redis.localhost.password", "")
+	viper.Set("redis.localhost.db", 0)
+	viper.Set("redis.localhost.dial_timeout", 5)
+	viper.Set("redis.localhost.read_timeout", 3)
+	viper.Set("redis.localhost.write_timeout", 3)
+	viper.Set("redis.localhost.pool_size", 0)
 	rdb, err := RedisClient("localhost")
 	if err != nil {
 		t.Error(err)
@@ -40,13 +41,13 @@ func TestRedisClient(t *testing.T) {
 	if _, err := RedisClient("localhost"); err != nil {
 		t.Error(err)
 	}
-	viper.SetDefault("redis.unittest.addr", "127.0.0.1:6379")
-	viper.SetDefault("redis.unittest.password", "")
-	viper.SetDefault("redis.unittest.db", 0)
-	viper.SetDefault("redis.unittest.dial_timeout", 5)
-	viper.SetDefault("redis.unittest.read_timeout", 3)
-	viper.SetDefault("redis.unittest.write_timeout", 3)
-	viper.SetDefault("redis.unittest.pool_size", 0)
+	viper.Set("redis.unittest.addr", "127.0.0.1:6379")
+	viper.Set("redis.unittest.password", "")
+	viper.Set("redis.unittest.db", 0)
+	viper.Set("redis.unittest.dial_timeout", 5)
+	viper.Set("redis.unittest.read_timeout", 3)
+	viper.Set("redis.unittest.write_timeout", 3)
+	viper.Set("redis.unittest.pool_size", 0)
 	rdb, err = RedisClient("unittest")
 	if err != nil {
 		t.Error(err)
