@@ -9,17 +9,29 @@
 # mysql 按不同环境可以添加多个配置
 # 本地配置
 [mysql.localhost]
+# 数据库 host
 host = "localhost"
+# 数据库端口
 port = 3306
+# 用户名
 username = "root"
+# 密码
 password = "roooooot"
+# 数据名称
 dbname = "test"
+# 开启打印日志模式
 log_mode = false
+# 最大空闲连接数
 max_idle_conns = 20
+# 最大连接数
 max_open_conns = 20
+# 连接最长生命周期（分钟）
 conn_max_life_minutes = 10
+# 连接超时时间（秒）
 conn_timeout = 3
+# 读超时时间（秒）
 read_timeout = 5
+# 写超时时间（秒）
 write_timeout = 5
 # 其他环境
 [mysql.other]
@@ -58,9 +70,48 @@ conn_max_life_minutes = 10
 # redis 按不同环境可以添加多个配置
 # 本地配置
 [redis.localhost]
-    mode = "normal"
-    address = "localhost:6379"
-    password = ""
-    dbindex = 0
-    master = ""
+# redis 地址
+addr = "localhost:6379"
+# 密码
+password = ""
+# 使用的 db 索引
+db = 0
+# 连接超时时间（秒）
+dial_timeout = 5
+# 读超时（秒）
+read_timeout = 3
+# 写超时（秒）
+write_timeout = 3
+# 连接池大小: 0表示10 * runtime.NumCPU()
+pool_size = 0
 [redis.other]
+
+########## Redis Sentinel 相关配置
+[redis.sentinel.prod]
+# master 节点名
+master_name = ""
+# sentinel 地址列表
+sentinel_addrs = [""]
+# 密码
+password = ""
+# db 索引
+db = 0
+# 连接超时时间（秒）
+dial_timeout = 5
+# 读超时（秒）
+read_timeout = 3
+# 写超时（秒）
+write_timeout = 3
+# 连接池大小: 0表示10 * runtime.NumCPU()
+pool_size = 0
+
+########## Redis Cluster 相关配置
+[redis.cluster.prod]
+# 集群节点地址列表
+addrs = [""]
+# 密码
+password = ""
+# 读超时（秒）
+read_timeout = 3
+# 写超时（秒）
+write_timeout = 3

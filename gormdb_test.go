@@ -81,10 +81,8 @@ func TestGormMySQL(t *testing.T) {
 	GormInstances.Range(func(k, v interface{}) bool {
 		instanceCount++
 		if k.(string) == "mysql" {
-			t.Logf("k:%#v v:%#v\n", k, v)
 			v.(*sync.Map).Range(func(kk, vv interface{}) bool {
 				mysqlCount++
-				t.Logf("kk:%#v vv:%#v\n", kk, vv)
 				return true
 			})
 		}
@@ -123,10 +121,8 @@ func TestGormSQLite3(t *testing.T) {
 	GormInstances.Range(func(k, v interface{}) bool {
 		instanceCount++
 		if k.(string) == "sqlite3" {
-			t.Logf("k:%#v v:%#v\n", k, v)
 			v.(*sync.Map).Range(func(kk, vv interface{}) bool {
 				sqlite3Count++
-				t.Logf("kk:%#v vv:%#v\n", kk, vv)
 				return true
 			})
 		}
