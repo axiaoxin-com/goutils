@@ -18,7 +18,7 @@ func TestRequestHTTPHandler(t *testing.T) {
 		})
 	})
 
-	getrecorder, err := RequestHTTPHandler(app, "GET", "/api/get", nil)
+	getrecorder, err := RequestHTTPHandler(app, "GET", "/api/get", nil, nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -45,7 +45,10 @@ func TestRequestHTTPHandler(t *testing.T) {
 		})
 	})
 	body := []byte(`{"name": "axiaoxin"}`)
-	postrecorder, err := RequestHTTPHandler(app, "POST", "/api/post", body, "application/json")
+	header := map[string]string{
+		"content-type": "application/json",
+	}
+	postrecorder, err := RequestHTTPHandler(app, "POST", "/api/post", body, header)
 	if err != nil {
 		t.Error(err)
 	}
@@ -62,7 +65,7 @@ func TestRequestHTTPHandlerFunc(t *testing.T) {
 	f := func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Hello!")
 	}
-	b, err := RequestHTTPHandlerFunc(f, "GET", nil)
+	b, err := RequestHTTPHandlerFunc(f, "GET", nil, nil)
 	if err != nil {
 		t.Error(err)
 	}

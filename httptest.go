@@ -10,13 +10,13 @@ import (
 
 // RequestHTTPHandler 根据参数请求传入的 http.Handler 对应的 path 接口，用于接口测试
 // 返回 ResponseRecorder: https://golang.org/pkg/net/http/httptest/#ResponseRecorder
-func RequestHTTPHandler(app http.Handler, method, path string, body []byte, contentType ...string) (*httptest.ResponseRecorder, error) {
+func RequestHTTPHandler(app http.Handler, method, path string, body []byte, header map[string]string) (*httptest.ResponseRecorder, error) {
 	req, err := http.NewRequest(strings.ToUpper(method), path, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
-	if len(contentType) > 0 {
-		req.Header.Set("Content-Type", contentType[0])
+	for k, v := range header {
+		req.Header.Add(k, v)
 	}
 	rsp := httptest.NewRecorder()
 	app.ServeHTTP(rsp, req)
@@ -24,7 +24,7 @@ func RequestHTTPHandler(app http.Handler, method, path string, body []byte, cont
 }
 
 // RequestHTTPHandlerFunc 根据参数请求传入的 http.HandlerFunc 返回请求处理结果 body ，用于接口测试
-func RequestHTTPHandlerFunc(f http.HandlerFunc, method string, body []byte, contentType ...string) ([]byte, error) {
+func RequestHTTPHandlerFunc(f http.HandlerFunc, method string, body []byte, header map[string]string) ([]byte, error) {
 	server := httptest.NewServer(http.HandlerFunc(f))
 	defer server.Close()
 
@@ -33,8 +33,8 @@ func RequestHTTPHandlerFunc(f http.HandlerFunc, method string, body []byte, cont
 	if err != nil {
 		return nil, err
 	}
-	if len(contentType) > 0 {
-		req.Header.Set("Content-Type", contentType[0])
+	for k, v := range header {
+		req.Header.Set(k, v)
 	}
 	rsp, err := client.Do(req)
 	if err != nil {
