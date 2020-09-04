@@ -8,3 +8,10 @@ func TestRemoveAllWhitespace(t *testing.T) {
 		t.Fatal("RemoveAllWhiteSpace error:", rs)
 	}
 }
+
+func TestReverseString(t *testing.T) {
+	s := ReverseString("12345")
+	if s != "54321" {
+		t.Error("reverse error:", s)
+	}
+}
