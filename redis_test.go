@@ -1,9 +1,10 @@
 package goutils
 
 import (
+	"context"
 	"testing"
 
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
 )
 
@@ -35,7 +36,7 @@ func TestRedisClient(t *testing.T) {
 		t.Fatal("get a nil redis client")
 	}
 	defer CloseRedisInstances()
-	if _, err := rdb.Ping().Result(); err != nil {
+	if _, err := rdb.Ping(context.TODO()).Result(); err != nil {
 		t.Error(err)
 	}
 	if _, err := RedisClient("localhost"); err != nil {

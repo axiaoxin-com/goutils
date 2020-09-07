@@ -3,31 +3,32 @@
 package goutils
 
 import (
+	"context"
 	"sync"
 	"time"
 
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
 )
 
 // NewRedisClient 返回 redis 的客户端连接对象
 func NewRedisClient(opt *redis.Options) (*redis.Client, error) {
 	r := redis.NewClient(opt)
-	_, err := r.Ping().Result()
+	_, err := r.Ping(context.Background()).Result()
 	return r, err
 }
 
 // NewRedisFailoverClient 返回带 sentinel 的 redis 连接对象
 func NewRedisFailoverClient(opt *redis.FailoverOptions) (*redis.Client, error) {
 	r := redis.NewFailoverClient(opt)
-	_, err := r.Ping().Result()
+	_, err := r.Ping(context.Background()).Result()
 	return r, err
 }
 
 // NewRedisClusterClient 返回 redis cluster 的连接对象
 func NewRedisClusterClient(opt *redis.ClusterOptions) (*redis.ClusterClient, error) {
 	c := redis.NewClusterClient(opt)
-	_, err := c.Ping().Result()
+	_, err := c.Ping(context.Background()).Result()
 	return c, err
 }
 
