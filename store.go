@@ -60,8 +60,7 @@ type InmemStore struct {
 }
 
 // NewInmemStore new a InmemStore
-func NewInmemStore(defaultExpire time.Duration) *InmemStore {
-	purgeDuration := time.Minute * 1
+func NewInmemStore(defaultExpire time.Duration, purgeDuration time.Duration) *InmemStore {
 	return &InmemStore{
 		*cache.New(defaultExpire, purgeDuration),
 	}

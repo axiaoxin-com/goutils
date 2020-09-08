@@ -18,7 +18,7 @@ func (s ateststruct) X() bool {
 }
 
 func TestInmemStore(t *testing.T) {
-	store := NewInmemStore(2 * time.Second)
+	store := NewInmemStore(2*time.Second, 1*time.Minute)
 	assert.NotNil(t, store)
 
 	value := ""
