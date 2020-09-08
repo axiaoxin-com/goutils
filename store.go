@@ -45,10 +45,10 @@ type Store interface {
 	Delete(ctx context.Context, key string) error
 
 	// Increment increments a real number, and returns error if the value is not real
-	Increment(ctx context.Context, key string, data uint64) (uint64, error)
+	Increment(ctx context.Context, key string, data int64) error
 
 	// Decrement decrements a real number, and returns error if the value is not real
-	Decrement(ctx context.Context, key string, data uint64) (uint64, error)
+	Decrement(ctx context.Context, key string, data int64) error
 
 	// Flush deletes all items from the cache.
 	Flush(ctx context.Context) error
@@ -67,7 +67,7 @@ func NewInmemStore(defaultExpire time.Duration, purgeDuration time.Duration) *In
 }
 
 // Get implement Store interface
-func (c *InmemStore) Get(ctx context.Context, key string, ptrValue interface{}) error {
+func (c InmemStore) Get(ctx context.Context, key string, ptrValue interface{}) error {
 	val, found := c.Cache.Get(key)
 	if !found {
 		return ErrStoreKeyMiss
@@ -85,7 +85,7 @@ func (c *InmemStore) Get(ctx context.Context, key string, ptrValue interface{}) 
 // Add an item to the cache, replacing any existing item. If the duration is 0
 // (DefaultExpiration), the cache's default expiration time is used. If it is -1
 // (NoExpiration), the item never expires.
-func (c *InmemStore) Set(ctx context.Context, key string, value interface{}, expire time.Duration) error {
+func (c InmemStore) Set(ctx context.Context, key string, value interface{}, expire time.Duration) error {
 	c.Cache.Set(key, value, expire)
 	return nil
 }
@@ -93,37 +93,37 @@ func (c *InmemStore) Set(ctx context.Context, key string, value interface{}, exp
 // Add implement Store interface
 // Add an item to the cache only if an item doesn't already exist for the given
 // key, or if the existing item has expired. Returns an error otherwise.
-func (c *InmemStore) Add(ctx context.Context, key string, value interface{}, expire time.Duration) error {
+func (c InmemStore) Add(ctx context.Context, key string, value interface{}, expire time.Duration) error {
 	return c.Cache.Add(key, value, expire)
 }
 
 // Replace implement Store interface
 // Set a new value for the cache key only if it already exists, and the existing
 // item hasn't expired. Returns an error otherwise.
-func (c *InmemStore) Replace(ctx context.Context, key string, value interface{}, expire time.Duration) error {
+func (c InmemStore) Replace(ctx context.Context, key string, value interface{}, expire time.Duration) error {
 	return c.Cache.Replace(key, value, expire)
 }
 
 // Delete implement Cache interface
-func (c *InmemStore) Delete(ctx context.Context, key string) error {
+func (c InmemStore) Delete(ctx context.Context, key string) error {
 	c.Cache.Delete(key)
 	return nil
 }
 
 // Increment implement Store interface
-func (c *InmemStore) Increment(ctx context.Context, key string, n int64) error {
+func (c InmemStore) Increment(ctx context.Context, key string, n int64) error {
 	err := c.Cache.Increment(key, n)
 	return err
 }
 
 // Decrement implement Store interface
-func (c *InmemStore) Decrement(ctx context.Context, key string, n int64) error {
+func (c InmemStore) Decrement(ctx context.Context, key string, n int64) error {
 	err := c.Cache.Decrement(key, n)
 	return err
 }
 
 // Flush implement Store interface
-func (c *InmemStore) Flush(ctx context.Context) error {
+func (c InmemStore) Flush(ctx context.Context) error {
 	c.Cache.Flush()
 	return nil
 }
@@ -136,7 +136,7 @@ type RedisStore struct {
 }
 
 // Encode returns a []byte representing the passed value
-func (c *RedisStore) Encode(value interface{}) ([]byte, error) {
+func (c RedisStore) Encode(value interface{}) ([]byte, error) {
 	if bytes, ok := value.([]byte); ok {
 		return bytes, nil
 	}
@@ -158,7 +158,7 @@ func (c *RedisStore) Encode(value interface{}) ([]byte, error) {
 }
 
 // Decode deserialices the passed []byte into a the passed ptr interface{}
-func (c *RedisStore) Decode(byt []byte, ptr interface{}) (err error) {
+func (c RedisStore) Decode(byt []byte, ptr interface{}) (err error) {
 	if bytes, ok := ptr.(*[]byte); ok {
 		*bytes = byt
 		return nil
@@ -204,7 +204,7 @@ func NewRedisStore(rdb *redis.Client) *RedisStore {
 }
 
 // Get implement Store interface
-func (c *RedisStore) Get(ctx context.Context, key string, ptrValue interface{}) error {
+func (c RedisStore) Get(ctx context.Context, key string, ptrValue interface{}) error {
 	raw, err := c.Client.Get(ctx, key).Result()
 	if err == redis.Nil {
 		return ErrStoreKeyMiss
@@ -215,7 +215,7 @@ func (c *RedisStore) Get(ctx context.Context, key string, ptrValue interface{}) 
 }
 
 // Set implement Store interface
-func (c *RedisStore) Set(ctx context.Context, key string, value interface{}, expire time.Duration) error {
+func (c RedisStore) Set(ctx context.Context, key string, value interface{}, expire time.Duration) error {
 	v, err := c.Encode(value)
 	if err != nil {
 		return err
@@ -224,7 +224,7 @@ func (c *RedisStore) Set(ctx context.Context, key string, value interface{}, exp
 }
 
 // Add implement Store interface
-func (c *RedisStore) Add(ctx context.Context, key string, value interface{}, expire time.Duration) error {
+func (c RedisStore) Add(ctx context.Context, key string, value interface{}, expire time.Duration) error {
 	_, err := c.Client.Get(ctx, key).Result()
 	if err == redis.Nil {
 		v, e := c.Encode(value)
@@ -239,7 +239,7 @@ func (c *RedisStore) Add(ctx context.Context, key string, value interface{}, exp
 }
 
 // Replace implement Store interface
-func (c *RedisStore) Replace(ctx context.Context, key string, value interface{}, expire time.Duration) error {
+func (c RedisStore) Replace(ctx context.Context, key string, value interface{}, expire time.Duration) error {
 	_, err := c.Client.Get(ctx, key).Result()
 	if err == redis.Nil {
 		return ErrStoreKeyMiss
@@ -254,21 +254,21 @@ func (c *RedisStore) Replace(ctx context.Context, key string, value interface{},
 }
 
 // Delete implement Store interface
-func (c *RedisStore) Delete(ctx context.Context, key string) error {
+func (c RedisStore) Delete(ctx context.Context, key string) error {
 	return c.Client.Del(ctx, key).Err()
 }
 
 // Increment implement Store interface
-func (c *RedisStore) Increment(ctx context.Context, key string, n int64) error {
+func (c RedisStore) Increment(ctx context.Context, key string, n int64) error {
 	return c.Client.IncrBy(ctx, key, n).Err()
 }
 
 // Decrement implement Store interface
-func (c *RedisStore) Decrement(ctx context.Context, key string, n int64) error {
+func (c RedisStore) Decrement(ctx context.Context, key string, n int64) error {
 	return c.Client.DecrBy(ctx, key, n).Err()
 }
 
 // Flush implement Store interface
-func (c *RedisStore) Flush(ctx context.Context) error {
+func (c RedisStore) Flush(ctx context.Context) error {
 	return c.Client.FlushDB(ctx).Err()
 }
