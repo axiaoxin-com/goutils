@@ -12,4 +12,5 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1
+	golang.org/x/time v0.0.0-20190308202827-9d24e82272b4
 )
