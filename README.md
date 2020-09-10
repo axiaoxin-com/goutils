@@ -7,3 +7,55 @@
 Golang 通用类函数工具包
 
 在线文档：<https://godoc.org/github.com/axiaoxin-com/goutils>
+
+## 功能概览
+
+### 数据库相关
+
+- [根据配置信息生成不同数据库的 DSN 字符串](./dbconfig.go)
+- [gorm 常用操作封装（包括但不限于：创建各类 db 实例，根据 viper 配置直接获取各类 db 实例）](./gormdb.go)
+- [sqlx 常用操作封装（包括但不限于：创建各类 db 实例，根据 viper 配置直接获取各类 db 实例）](./sqlxdb.go)
+
+### Redis 相关
+
+- [redis 常用操作封装（包括但不限于：创建各类连接客户端实例，根据 viper 配置直接获取对应实例）](./redis.go)
+
+### 文件相关
+
+- [复制文件](./file.go#L10)
+
+### 单元测试相关
+
+- [模拟 http 请求对应的 http.Handler](./httptest.go)
+
+### IP 相关
+
+- [获取当前 IP](./ip.go#L8)
+
+### 时间相关
+
+- [自定义结构体序列化为 JSON 时时间类型字段的格式](./jsontime.go)
+
+### slice 相关
+
+- [根据下标删除 string slice 中的元素](./slice.go#L6)
+- [判断两个 string slice 是否相同](./slice.go#L11)
+
+### string 相关
+
+- [删除字符串中所有的空白符](./string.go#L8)
+- [反转字符串](./string.go#L16)
+
+### struct 相关
+
+- [将结构体指针对象转换为 url.Values](./struct.go#L12)
+
+### 配置相关
+
+- [根据配置文件路径和名称初始化 viper](./viper.go)
+
+### 其他分类
+
+- [错误码结构体对象封装](./errcode.go)
+- [hashids: 生成可相互转换的数字类型的 ID 与随机字符串 ID](./hashids.go)
+- [分页计算](./pagination.go)

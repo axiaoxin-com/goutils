@@ -49,8 +49,9 @@ func (c *ErrCode) Errs() []error {
 	return c.errs
 }
 
-// SetMsg 更新 msg 字段返回新的对象避免覆盖原始对象
+// SetMsg 更新 msg 字段
 func (c *ErrCode) SetMsg(msg string) *ErrCode {
+	// 返回新的对象避免覆盖原始对象
 	nc := *c
 	nc.msg = msg
 	return &nc
