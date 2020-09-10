@@ -38,21 +38,25 @@ Golang 通用类函数工具包
 
 ### slice 相关
 
-- [根据下标删除 string slice 中的元素](./slice.go#L6)
-- [判断两个 string slice 是否相同](./slice.go#L11)
+- [根据下标删除 string slice 中的元素: RemoveStringSliceItemByIndex](./slice.go)
+- [判断两个 string slice 是否相同: IsEqualStringSlice](./slice.go)
 
 ### string 相关
 
-- [删除字符串中所有的空白符](./string.go#L8)
-- [反转字符串](./string.go#L16)
+- [删除字符串中所有的空白符: RemoveAllWhitespace](./string.go)
+- [反转字符串: ReverseString](./string.go)
 
 ### struct 相关
 
-- [将结构体指针对象转换为 url.Values](./struct.go#L12)
+- [将结构体指针对象转换为 url.Values: StructToURLValues](./struct.go)
 
 ### 配置相关
 
 - [根据配置文件路径和名称初始化 viper](./viper.go)
+
+### URL 相关
+
+- [生成 url key: URLKey](./url.go)
 
 ### 其他分类
 
