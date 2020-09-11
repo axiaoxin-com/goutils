@@ -22,7 +22,7 @@ Golang 通用类函数工具包
 
 ### 文件相关
 
-- [复制文件](./file.go#L10)
+- [复制文件: CopyFile](./file.go)
 
 ### 单元测试相关
 
@@ -30,7 +30,7 @@ Golang 通用类函数工具包
 
 ### IP 相关
 
-- [获取当前 IP](./ip.go#L8)
+- [获取当前 IP: GetLocalIP](./ip.go)
 
 ### 时间相关
 
