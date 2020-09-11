@@ -46,16 +46,13 @@ Golang 通用类函数工具包
 - [删除字符串中所有的空白符: RemoveAllWhitespace](./string.go)
 - [反转字符串: ReverseString](./string.go)
 
-### struct 相关
-
-- [将结构体指针对象转换为 url.Values: StructToURLValues](./struct.go)
-
 ### 配置相关
 
 - [根据配置文件路径和名称初始化 viper](./viper.go)
 
 ### URL 相关
 
+- [将结构体指针对象转换为 url.Values: StructToURLValues](./struct.go)
 - [生成 url key: URLKey](./url.go)
 
 ### 其他分类
