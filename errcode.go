@@ -57,6 +57,14 @@ func (c *ErrCode) SetMsg(msg string) *ErrCode {
 	return &nc
 }
 
+// AppendMsg 追加 msg 字段
+func (c *ErrCode) AppendMsg(msg string) *ErrCode {
+	// 返回新的对象避免覆盖原始对象
+	nc := *c
+	nc.msg += ":" + msg
+	return &nc
+}
+
 // AppendError 添加 err 到 errs 中
 func (c *ErrCode) AppendError(errs ...error) *ErrCode {
 	nc := *c
