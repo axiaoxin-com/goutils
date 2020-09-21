@@ -60,3 +60,4 @@ Golang 通用类函数工具包
 - [错误码结构体对象封装](./errcode.go)
 - [hashids: 生成可相互转换的数字类型的 ID 与随机字符串 ID](./hashids.go)
 - [分页计算](./pagination.go)
+- [gin binding 参数验证错误信息自定义](./gin_validator.go)
