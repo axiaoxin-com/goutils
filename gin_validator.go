@@ -71,6 +71,7 @@ func GinValidationErrorToText(e validator.FieldError) string {
 	return fmt.Sprintf("%s is not valid", e.Field())
 }
 
-func init() {
-	binding.Validator = &GinStructValidator{}
-}
+// Usage
+// func init() {
+//     binding.Validator = &GinStructValidator{}
+// }
