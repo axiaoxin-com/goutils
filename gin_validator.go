@@ -1,3 +1,10 @@
+// gin binding validator
+
+// Usage
+// func init() {
+//     binding.Validator = &GinStructValidator{}
+// }
+
 package goutils
 
 import (
@@ -60,18 +67,17 @@ func GinValidationErrorToText(e validator.FieldError) string {
 	case "required":
 		return fmt.Sprintf("%s is required", e.Field())
 	case "max":
-		return fmt.Sprintf("%s cannot be bigger than %s", e.Field(), e.Param())
+		return fmt.Sprintf("%s cannot be more than %s", e.Field(), e.Param())
 	case "min":
-		return fmt.Sprintf("%s must be bigger than %s", e.Field(), e.Param())
+		return fmt.Sprintf("%s must be more than %s", e.Field(), e.Param())
 	case "email":
 		return fmt.Sprintf("Invalid email format")
 	case "len":
 		return fmt.Sprintf("%s must be %s characters long", e.Field(), e.Param())
+	case "oneof":
+		return fmt.Sprintf("%s must be one of:[%s]", e.Field(), e.Param())
+	case "datetime":
+		return fmt.Sprintf("%s must use format as %s", e.Field(), e.Param())
 	}
 	return fmt.Sprintf("%s is not valid", e.Field())
 }
-
-// Usage
-// func init() {
-//     binding.Validator = &GinStructValidator{}
-// }
