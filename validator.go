@@ -37,7 +37,7 @@ func (v *GinStructValidator) ValidateStruct(obj interface{}) error {
 		if errs := v.validate.Struct(obj); errs != nil {
 			var errmsg string
 			for _, e := range errs.(validator.ValidationErrors) {
-				errmsg += fmt.Sprintf("%s;", GinValidationErrorToText(e))
+				errmsg += fmt.Sprintf("%s;", ValidationErrorToText(e))
 			}
 			return errors.New(errmsg)
 		}
@@ -62,7 +62,7 @@ func (v *GinStructValidator) lazyinit() {
 }
 
 // GinValidationErrorToText error msg for human
-func GinValidationErrorToText(e validator.FieldError) string {
+func ValidationErrorToText(e validator.FieldError) string {
 	switch e.ActualTag() {
 	case "required":
 		return fmt.Sprintf("%s is required", e.Field())
