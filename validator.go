@@ -61,7 +61,7 @@ func (v *GinStructValidator) lazyinit() {
 	})
 }
 
-// GinValidationErrorToText error msg for human
+// ValidationErrorToText error msg for human
 func ValidationErrorToText(e validator.FieldError) string {
 	switch e.ActualTag() {
 	case "required":
