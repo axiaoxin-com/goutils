@@ -25,6 +25,9 @@ type GinStructValidator struct {
 
 var _ binding.StructValidator = &GinStructValidator{}
 
+// ValidatorTagName 结构体 validator 的 tag 名
+var ValidatorTagName = "binding"
+
 // ValidateStruct receives any kind of type, but only performed struct or pointer to struct type.
 func (v *GinStructValidator) ValidateStruct(obj interface{}) error {
 	value := reflect.ValueOf(obj)
@@ -57,7 +60,7 @@ func (v *GinStructValidator) Engine() interface{} {
 func (v *GinStructValidator) lazyinit() {
 	v.once.Do(func() {
 		v.validate = validator.New()
-		v.validate.SetTagName("binding")
+		v.validate.SetTagName(ValidatorTagName)
 	})
 }
 
