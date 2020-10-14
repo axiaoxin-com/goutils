@@ -57,8 +57,8 @@ Golang 通用类函数工具包
 
 ### 时间相关
 
-- Unix 时间戳规整：[UnixTImestampTrim](./time.go)
-- 字符串时间转时间对象：[StrToTime](./time.go)
+- [Unix 时间戳规整：UnixTImestampTrim](./time.go)
+- [字符串时间转时间对象：StrToTime](./time.go)
 
 ### 其他分类
 
