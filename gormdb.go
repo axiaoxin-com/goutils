@@ -7,14 +7,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/jinzhu/gorm"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 
 	// need by gorm
-	_ "github.com/jinzhu/gorm/dialects/mssql"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
+	"gorm.io/driver/sqlserver"
 )
 
 // GormBaseModel 基础 model 定义
@@ -31,14 +31,17 @@ func NewGormSQLite3(conf DBConfig) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	gormSqlite3, err := gorm.Open("sqlite3", dsn)
+	gormSqlite3, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
-	gormSqlite3.LogMode(conf.LogMode)
-	gormSqlite3.DB().SetMaxIdleConns(conf.MaxIdleConns)
-	gormSqlite3.DB().SetMaxOpenConns(conf.MaxOpenConns)
-	gormSqlite3.DB().SetConnMaxLifetime(time.Duration(conf.ConnMaxLifeMinutes) * time.Minute)
+	sqlite3db, err := gormSqlite3.DB()
+	if err != nil {
+		return nil, err
+	}
+	sqlite3db.SetMaxIdleConns(conf.MaxIdleConns)
+	sqlite3db.SetMaxOpenConns(conf.MaxOpenConns)
+	sqlite3db.SetConnMaxLifetime(time.Duration(conf.ConnMaxLifeMinutes) * time.Minute)
 	return gormSqlite3, nil
 }
 
@@ -49,14 +52,17 @@ func NewGormMySQL(conf DBConfig) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	gormMysql, err := gorm.Open("mysql", dsn)
+	gormMysql, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
-	gormMysql.LogMode(conf.LogMode)
-	gormMysql.DB().SetMaxIdleConns(conf.MaxIdleConns)
-	gormMysql.DB().SetMaxOpenConns(conf.MaxOpenConns)
-	gormMysql.DB().SetConnMaxLifetime(time.Duration(conf.ConnMaxLifeMinutes) * time.Minute)
+	mysqldb, err := gormMysql.DB()
+	if err != nil {
+		return nil, err
+	}
+	mysqldb.SetMaxIdleConns(conf.MaxIdleConns)
+	mysqldb.SetMaxOpenConns(conf.MaxOpenConns)
+	mysqldb.SetConnMaxLifetime(time.Duration(conf.ConnMaxLifeMinutes) * time.Minute)
 	return gormMysql, nil
 }
 
@@ -67,33 +73,33 @@ func NewGormPostgres(conf DBConfig) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	gormPostgres, err := gorm.Open("postgres", dsn)
+	gormPostgres, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
-	gormPostgres.LogMode(conf.LogMode)
-	gormPostgres.DB().SetMaxIdleConns(conf.MaxIdleConns)
-	gormPostgres.DB().SetMaxOpenConns(conf.MaxOpenConns)
-	gormPostgres.DB().SetConnMaxLifetime(time.Duration(conf.ConnMaxLifeMinutes) * time.Minute)
+	pg, err := gormPostgres.DB()
+	pg.SetMaxIdleConns(conf.MaxIdleConns)
+	pg.SetMaxOpenConns(conf.MaxOpenConns)
+	pg.SetConnMaxLifetime(time.Duration(conf.ConnMaxLifeMinutes) * time.Minute)
 	return gormPostgres, nil
 }
 
-// NewGormMsSQL 返回 gorm sqlserver 连接实例
-func NewGormMsSQL(conf DBConfig) (*gorm.DB, error) {
-	dsn, err := conf.MsSQLDSN()
+// NewGormSqlserver 返回 gorm sqlserver 连接实例
+func NewGormSqlserver(conf DBConfig) (*gorm.DB, error) {
+	dsn, err := conf.SqlserverDSN()
 	if err != nil {
 		return nil, err
 	}
 
-	gormMssql, err := gorm.Open("mssql", dsn)
+	gormSqlserver, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
-	gormMssql.LogMode(conf.LogMode)
-	gormMssql.DB().SetMaxIdleConns(conf.MaxIdleConns)
-	gormMssql.DB().SetMaxOpenConns(conf.MaxOpenConns)
-	gormMssql.DB().SetConnMaxLifetime(time.Duration(conf.ConnMaxLifeMinutes) * time.Minute)
-	return gormMssql, nil
+	sqlserverdb, err := gormSqlserver.DB()
+	sqlserverdb.SetMaxIdleConns(conf.MaxIdleConns)
+	sqlserverdb.SetMaxOpenConns(conf.MaxOpenConns)
+	sqlserverdb.SetConnMaxLifetime(time.Duration(conf.ConnMaxLifeMinutes) * time.Minute)
+	return gormSqlserver, nil
 }
 
 // LikeFieldEscape 转义 SQL 的 like 模糊查询时字段值为通配符的值
@@ -202,15 +208,15 @@ func GormPostgres(which string) (*gorm.DB, error) {
 	return db, nil
 }
 
-// GormMsSQL 根据 viper 配置中的实例名称返回 sqlserver 实例
-func GormMsSQL(which string) (*gorm.DB, error) {
-	mssqls, loaded := GormInstances.LoadOrStore("mssql", new(sync.Map))
+// GormSqlserver 根据 viper 配置中的实例名称返回 sqlserver 实例
+func GormSqlserver(which string) (*gorm.DB, error) {
+	sqlservers, loaded := GormInstances.LoadOrStore("sqlserver", new(sync.Map))
 	if loaded {
-		if db, loaded := mssqls.(*sync.Map).Load(which); loaded {
+		if db, loaded := sqlservers.(*sync.Map).Load(which); loaded {
 			return db.(*gorm.DB), nil
 		}
 	}
-	prefix := "mssql." + which
+	prefix := "sqlserver." + which
 	conf := DBConfig{
 		Host:               viper.GetString(prefix + ".host"),
 		Port:               viper.GetInt(prefix + ".port"),
@@ -222,12 +228,12 @@ func GormMsSQL(which string) (*gorm.DB, error) {
 		MaxOpenConns:       viper.GetInt(prefix + ".max_open_conns"),
 		ConnMaxLifeMinutes: viper.GetInt(prefix + ".conn_max_life_minutes"),
 	}
-	db, err := NewGormMsSQL(conf)
+	db, err := NewGormSqlserver(conf)
 	if err != nil {
 		return nil, err
 	}
-	mssqls.(*sync.Map).Store(which, db)
-	GormInstances.Store("mssql", mssqls)
+	sqlservers.(*sync.Map).Store(which, db)
+	GormInstances.Store("sqlservers", sqlservers)
 	return db, nil
 }
 
@@ -237,7 +243,8 @@ func CloseGormInstances() {
 		if m, ok := iv.(*sync.Map); ok {
 			m.Range(func(k, v interface{}) bool {
 				if db, ok := v.(*gorm.DB); ok {
-					db.Close()
+					sqlDB, _ := db.DB()
+					sqlDB.Close()
 				}
 				return true
 			})

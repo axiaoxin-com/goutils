@@ -38,7 +38,8 @@ func TestJSONTimeInGORM(t *testing.T) {
 	if err != nil {
 		t.Fatal("new test db return error:", err)
 	}
-	defer db.Close()
+	sqlDB, err := db.DB()
+	defer sqlDB.Close()
 	defer os.Remove(dbname)
 
 	type jsonTimeNow struct {

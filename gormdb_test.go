@@ -17,9 +17,13 @@ func TestNewGormSQLite3(t *testing.T) {
 	if err != nil {
 		t.Error("new gorm sqlite3 return error:", err)
 	}
-	defer db.Close()
+	sqlDB, err := db.DB()
+	if err != nil {
+		t.Error(err)
+	}
+	defer sqlDB.Close()
 	defer os.Remove(dbname)
-	if err := db.DB().Ping(); err != nil {
+	if err := sqlDB.Ping(); err != nil {
 		t.Error(err)
 	}
 }
@@ -36,8 +40,12 @@ func TestNewGormMySQL(t *testing.T) {
 	if err != nil {
 		t.Error("new gorm mysql return error:", err)
 	}
-	defer db.Close()
-	if err := db.DB().Ping(); err != nil {
+	sqlDB, err := db.DB()
+	if err != nil {
+		t.Error(err)
+	}
+	defer sqlDB.Close()
+	if err := sqlDB.Ping(); err != nil {
 		t.Error(err)
 	}
 }
@@ -62,8 +70,14 @@ func TestGormMySQL(t *testing.T) {
 		t.Fatal(err)
 	} else if db == nil {
 		t.Fatal("db is nil")
-	} else if err := db.DB().Ping(); err != nil {
-		t.Error(err)
+	} else {
+		sqlDB, err := db.DB()
+		if err != nil {
+			t.Error(err)
+		}
+		if err := sqlDB.Ping(); err != nil {
+			t.Error(err)
+		}
 	}
 	defer CloseGormInstances()
 	if _, err := GormMySQL("unittest"); err != nil {
@@ -105,9 +119,16 @@ func TestGormSQLite3(t *testing.T) {
 		t.Fatal(err)
 	} else if db == nil {
 		t.Fatal("db is nil")
-	} else if err := db.DB().Ping(); err != nil {
-		t.Error(err)
+	} else {
+		sqlDB, err := db.DB()
+		if err != nil {
+			t.Error(err)
+		}
+		if err := sqlDB.Ping(); err != nil {
+			t.Error(err)
+		}
 	}
+
 	defer CloseGormInstances()
 	defer os.Remove(dbname)
 	if _, err := GormSQLite3("unittest"); err != nil {
@@ -149,9 +170,16 @@ func TestCloseGormInstances(t *testing.T) {
 		t.Fatal(err)
 	} else if db == nil {
 		t.Fatal("db is nil")
-	} else if err := db.DB().Ping(); err != nil {
-		t.Error(err)
+	} else {
+		sqlDB, err := db.DB()
+		if err != nil {
+			t.Error(err)
+		}
+		if err := sqlDB.Ping(); err != nil {
+			t.Error(err)
+		}
 	}
+
 	if _, loaded := GormInstances.Load("mysql"); !loaded {
 		t.Error("mysql should be loaded")
 	}
@@ -161,9 +189,16 @@ func TestCloseGormInstances(t *testing.T) {
 		t.Fatal(err)
 	} else if db == nil {
 		t.Fatal("db is nil")
-	} else if err := db.DB().Ping(); err != nil {
-		t.Error(err)
+	} else {
+		sqlDB, err := db.DB()
+		if err != nil {
+			t.Error(err)
+		}
+		if err := sqlDB.Ping(); err != nil {
+			t.Error(err)
+		}
 	}
+
 	if _, loaded := GormInstances.Load("sqlite3"); !loaded {
 		t.Error("sqlite3 should be loaded")
 	}

@@ -63,7 +63,7 @@ func NewSqlxPostgres(conf DBConfig) (*sqlx.DB, error) {
 
 // NewSqlxMsSQL 返回 sqlx sqlserver 连接实例
 func NewSqlxMsSQL(conf DBConfig) (*sqlx.DB, error) {
-	dsn, err := conf.MsSQLDSN()
+	dsn, err := conf.SqlserverDSN()
 	if err != nil {
 		return nil, err
 	}
