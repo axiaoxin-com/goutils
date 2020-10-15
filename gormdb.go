@@ -31,7 +31,7 @@ func NewGormSQLite3(conf DBConfig) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	gormSqlite3, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{})
+	gormSqlite3, err := gorm.Open(sqlite.Open(dsn), conf.GormConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func NewGormMySQL(conf DBConfig) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	gormMysql, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	gormMysql, err := gorm.Open(mysql.Open(dsn), conf.GormConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func NewGormPostgres(conf DBConfig) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	gormPostgres, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	gormPostgres, err := gorm.Open(postgres.Open(dsn), conf.GormConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +91,7 @@ func NewGormSqlserver(conf DBConfig) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	gormSqlserver, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
+	gormSqlserver, err := gorm.Open(sqlserver.Open(dsn), conf.GormConfig)
 	if err != nil {
 		return nil, err
 	}

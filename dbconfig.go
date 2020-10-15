@@ -3,6 +3,8 @@ package goutils
 import (
 	"errors"
 	"fmt"
+
+	"gorm.io/gorm"
 )
 
 // DBConfig 数据库配置
@@ -35,6 +37,8 @@ type DBConfig struct {
 	WriteTimeout int
 	// DisableSSL 是否关闭 ssl 模式
 	DisableSSL bool
+	// gorm config
+	GormConfig *gorm.Config
 }
 
 // MySQLDSN 返回 Mysql dsn 字符串
