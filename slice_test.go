@@ -23,3 +23,19 @@ func TestRemoveStringSliceItemByIndex(t *testing.T) {
 		t.Error("RemoveStringSliceItemByIndex return wrong result:", "raw:", rawStrSlice, "new:", newStrSlice)
 	}
 }
+
+func TestChunkFloat64Slice(t *testing.T) {
+	raw := []float64{1, 2, 3, 4, 5, 6, 7, 8, 9}
+	result := ChunkFloat64Slice(raw, 3)
+	if len(result) != 3 {
+		t.Error("chunk 3 error", result)
+	}
+	result = ChunkFloat64Slice(raw, 4)
+	if len(result) != 3 {
+		t.Error("chunk 4 error", result)
+	}
+	result = ChunkFloat64Slice(raw, 5)
+	if len(result) != 2 {
+		t.Error("chunk 5 error", result)
+	}
+}
