@@ -15,3 +15,14 @@ func TestReverseString(t *testing.T) {
 		t.Error("reverse error:", s)
 	}
 }
+
+func TestRemoveDuplicateWhitespace(t *testing.T) {
+	rs := RemoveDuplicateWhitespace(" a\tb\n \n\nc d   e ", true)
+	if rs != "a b c d e" {
+		t.Fatal("RemoveDuplicateWhitespace error:", rs)
+	}
+	rs = RemoveDuplicateWhitespace(" a\tb\n \n\nc d   e ", false)
+	if rs != " a b c d e " {
+		t.Fatal("RemoveDuplicateWhitespace error:", rs)
+	}
+}

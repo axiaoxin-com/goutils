@@ -45,6 +45,7 @@ Golang 通用类函数工具包
 
 - [删除字符串中所有的空白符: RemoveAllWhitespace](./string.go)
 - [反转字符串: ReverseString](./string.go)
+- [删除字符串中的重复空白符: RemoveDuplicateWhitespace](./string.go)
 
 ### 配置相关
 
