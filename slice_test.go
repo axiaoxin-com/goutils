@@ -39,3 +39,14 @@ func TestChunkFloat64Slice(t *testing.T) {
 		t.Error("chunk 5 error", result)
 	}
 }
+
+func TestIsStrInStrSlice(t *testing.T) {
+	r := IsStrInStrSlice("asd", []string{"xx", "aa", "xasd"})
+	if r == true {
+		t.Error("should return false")
+	}
+	r = IsStrInStrSlice("asd", []string{"xx", "aa", "asd"})
+	if r == false {
+		t.Error("should return true")
+	}
+}
