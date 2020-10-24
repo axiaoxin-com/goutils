@@ -41,6 +41,7 @@ Golang 通用类函数工具包
 - [根据下标删除 string slice 中的元素: RemoveStringSliceItemByIndex](./slice.go)
 - [判断两个 string slice 是否相同: IsEqualStringSlice](./slice.go)
 - [float64 slice 按指定大小进行切块: ChunkFloat64Slice](./slice.go)
+- [判断字符串是否在给定的字符串列表中: IsStrInStrSlice](./slice.go)
 
 ### string 相关
 

@@ -2,6 +2,8 @@
 
 package goutils
 
+import "sort"
+
 // RemoveStringSliceItemByIndex 根据下标删除 string slice 中的元素
 func RemoveStringSliceItemByIndex(slice []string, index int) []string {
 	return append(slice[:index], slice[index+1:]...)
@@ -32,4 +34,13 @@ func ChunkFloat64Slice(data []float64, chunkSize int) [][]float64 {
 		result = append(result, data[i:end])
 	}
 	return result
+}
+
+// IsStrInStrSlice 判断字符串是否在给定的字符串列表中
+func IsStrInStrSlice(str string, strslice []string) bool {
+	if !sort.StringsAreSorted(strslice) {
+		sort.Strings(strslice)
+	}
+	index := sort.SearchStrings(strslice, str)
+	return (index < len(strslice) && strslice[index] == str)
 }
