@@ -11,7 +11,7 @@ func UnixTimestampTrim(ts int64, sec int64) int64 {
 
 // StrToTime 字符串时间转 time 对象
 func StrToTime(layout, value string, loc ...*time.Location) (time.Time, error) {
-	location := time.UTC
+	location := time.Local
 	if len(loc) > 0 {
 		location = loc[0]
 	}
