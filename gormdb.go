@@ -253,3 +253,11 @@ func CloseGormInstances() {
 	})
 	GormInstances = sync.Map{}
 }
+
+// SetGormInstances 设置 gorm db 对象到 GormInstances 中
+func SetGormInstances(driverName, which string, db *gorm.DB) error {
+	ins, _ := GormInstances.LoadOrStore(driverName, new(sync.Map))
+	ins.(*sync.Map).Store(which, db)
+	GormInstances.Store(driverName, ins)
+	return nil
+}
