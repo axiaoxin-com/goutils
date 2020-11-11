@@ -10,6 +10,7 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/speps/go-hashids v2.0.0+incompatible
 	github.com/spf13/viper v1.7.1
 	github.com/ugorji/go v1.1.8 // indirect

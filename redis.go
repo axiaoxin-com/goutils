@@ -125,3 +125,9 @@ func CloseRedisInstances() {
 	})
 	RedisInstances = sync.Map{}
 }
+
+// SetRedisInstances 设置 redis 对象到 RedisInstances 中
+func SetRedisInstances(which string, rdb *redis.Client) error {
+	RedisInstances.Store(which, rdb)
+	return nil
+}
