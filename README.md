@@ -41,7 +41,8 @@ Golang 通用类函数工具包
 - [根据下标删除 string slice 中的元素: RemoveStringSliceItemByIndex](./slice.go)
 - [判断两个 string slice 是否相同: IsEqualStringSlice](./slice.go)
 - [float64 slice 按指定大小进行切块: ChunkFloat64Slice](./slice.go)
-- [判断字符串是否在给定的字符串列表中: IsStrInStrSlice](./slice.go)
+- [判断字符串是否在给定的字符串列表中: IsStrInSlice](./slice.go)
+- [判断 int 是否在给定的 int 列表中: IsIntInSlice](./slice.go)
 
 ### string 相关
 
@@ -60,8 +61,8 @@ Golang 通用类函数工具包
 
 ### 时间相关
 
-- [Unix 时间戳规整：UnixTImestampTrim](./time.go)
-- [字符串时间转时间对象：StrToTime](./time.go)
+- [Unix 时间戳规整： UnixTImestampTrim](./time.go)
+- [字符串时间转时间对象： StrToTime](./time.go)
 
 ### 其他分类
 
@@ -69,4 +70,4 @@ Golang 通用类函数工具包
 - [hashids: 生成可相互转换的数字类型的 ID 与随机字符串 ID](./hashids.go)
 - [分页计算](./pagination.go)
 - [validator 参数验证错误信息自定义](./validator.go)
-- [封装go-cache 的 Get 方法支持直接获取具体类型: GetGoCache](./gocache.go)
+- [封装 go-cache 的 Get 方法支持直接获取具体类型: GetGoCache](./gocache.go)

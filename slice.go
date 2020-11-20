@@ -36,11 +36,20 @@ func ChunkFloat64Slice(data []float64, chunkSize int) [][]float64 {
 	return result
 }
 
-// IsStrInStrSlice 判断字符串是否在给定的字符串列表中
-func IsStrInStrSlice(str string, strslice []string) bool {
-	if !sort.StringsAreSorted(strslice) {
-		sort.Strings(strslice)
+// IsStrInSlice 判断字符串是否在给定的字符串列表中
+func IsStrInSlice(i string, s []string) bool {
+	if !sort.StringsAreSorted(s) {
+		sort.Strings(s)
 	}
-	index := sort.SearchStrings(strslice, str)
-	return (index < len(strslice) && strslice[index] == str)
+	index := sort.SearchStrings(s, i)
+	return (index < len(s) && s[index] == i)
+}
+
+// IsIntInSlice 判断字符串是否在给定的字符串列表中
+func IsIntInSlice(i int, s []int) bool {
+	if !sort.IntsAreSorted(s) {
+		sort.Ints(s)
+	}
+	index := sort.SearchInts(s, i)
+	return (index < len(s) && s[index] == i)
 }
