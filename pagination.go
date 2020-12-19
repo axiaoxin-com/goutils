@@ -28,13 +28,16 @@ type Pagination struct {
 // PaginateByPageNumSize 按 pagenum,pagesize 计算分页信息
 // 参数必须全部大于 0
 func PaginateByPageNumSize(totalCount, pageNum, pageSize int) Pagination {
-	if totalCount <= 0 || pageNum <= 0 || pageSize <= 0 {
-		return Pagination{
-			TotalCount: totalCount,
-			PageNum:    pageNum,
-			PageSize:   pageSize,
-		}
+	if totalCount < 0 {
+		totalCount = 0
 	}
+	if pageNum <= 0 {
+		pageNum = 1
+	}
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+
 	pagesCount := int(math.Ceil(float64(totalCount) / float64(pageSize)))
 	nextPageNum := pageNum + 1
 	hasNext := nextPageNum < pagesCount
