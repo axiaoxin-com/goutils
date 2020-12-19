@@ -13,6 +13,10 @@ type Pagination struct {
 	PagesCount int `json:"pages_count"`
 	// 当前页码
 	PageNum int `json:"page_num"`
+	// 上一页页码
+	PrevPageNum int `json:"prev_page_num"`
+	// 下一页页码
+	NextPageNum int `json:"next_page_num"`
 	// 分页大小
 	PageSize int `json:"page_size"`
 	// 是否有上一页
@@ -37,12 +41,14 @@ func PaginateByPageNumSize(totalCount, pageNum, pageSize int) Pagination {
 	prevPageNum := pageNum - 1
 	hasPrev := prevPageNum > 0
 	return Pagination{
-		TotalCount: totalCount,
-		PagesCount: pagesCount,
-		PageNum:    pageNum,
-		PageSize:   pageSize,
-		HasPrev:    hasPrev,
-		HasNext:    hasNext,
+		TotalCount:  totalCount,
+		PagesCount:  pagesCount,
+		PageNum:     pageNum,
+		PrevPageNum: prevPageNum,
+		NextPageNum: nextPageNum,
+		PageSize:    pageSize,
+		HasPrev:     hasPrev,
+		HasNext:     hasNext,
 	}
 }
 
