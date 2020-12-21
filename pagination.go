@@ -40,7 +40,7 @@ func PaginateByPageNumSize(totalCount, pageNum, pageSize int) Pagination {
 
 	pagesCount := int(math.Ceil(float64(totalCount) / float64(pageSize)))
 	nextPageNum := pageNum + 1
-	hasNext := nextPageNum < pagesCount
+	hasNext := nextPageNum <= pagesCount
 	prevPageNum := pageNum - 1
 	hasPrev := prevPageNum > 0
 	return Pagination{
