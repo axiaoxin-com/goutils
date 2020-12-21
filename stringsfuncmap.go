@@ -7,8 +7,8 @@ import (
 	"unicode"
 )
 
-// StringsFuncs is a template.FuncMap with functions that can be used as template actions.
-var StringsFuncs = map[string]interface{}{
+// TemplFuncs is a template.FuncMap with functions that can be used as template actions.
+var TemplFuncs = map[string]interface{}{
 	"StrContains":       func(s, substr string) bool { return strings.Contains(s, substr) },
 	"StrContainsAny":    func(s, chars string) bool { return strings.ContainsAny(s, chars) },
 	"StrContainsRune":   func(s string, r rune) bool { return strings.ContainsRune(s, r) },
@@ -50,4 +50,5 @@ var StringsFuncs = map[string]interface{}{
 	"StrTrimRightFunc":  func(s string, f func(rune) bool) string { return strings.TrimRightFunc(s, f) },
 	"StrTrimSpace":      func(s string) string { return strings.TrimSpace(s) },
 	"StrTrimSuffix":     func(s, suffix string) string { return strings.TrimSuffix(s, suffix) },
+	"IsStrInSlice":      IsStrInSlice,
 }
