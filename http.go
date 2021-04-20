@@ -34,7 +34,7 @@ func NewHTTPMultipartReq(ctx context.Context, apiurl string, reqData map[string]
 }
 
 // HTTPPOST 发送 http post 请求
-func HTTPPOST(ctx context.Context, cli *http.Client, apiurl string, req *http.Request, rspPointer interface{}) error {
+func HTTPPOST(ctx context.Context, cli *http.Client, req *http.Request, rspPointer interface{}) error {
 	resp, err := cli.Do(req)
 	if err != nil {
 		return errors.Wrap(err, "POST do request error")
