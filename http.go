@@ -13,6 +13,20 @@ import (
 	"github.com/pkg/errors"
 )
 
+// NewHTTPJSONReq 根据参数创建 json 请求
+func NewHTTPJSONReq(ctx context.Context, apiurl string, reqData interface{}) (*http.Request, error) {
+	reqbuf, err := json.Marshal(reqData)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprint("json marshal error"))
+	}
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, apiurl, bytes.NewReader(reqbuf))
+	if err != nil {
+		return nil, errors.Wrap(err, "Post NewRequestWithContext")
+	}
+	req.Header.Set("Content-Type", "application/json")
+	return req, nil
+}
+
 // NewHTTPMultipartReq 根据参数创建form-data请求
 func NewHTTPMultipartReq(ctx context.Context, apiurl string, reqData map[string]string) (*http.Request, error) {
 	body := &bytes.Buffer{}

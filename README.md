@@ -61,6 +61,7 @@ Golang 通用类函数工具包
 
 ### HTTP 请求相关
 
+- [根据参数创建 json post 请求](./http.go)
 - [根据参数创建 form-data post 请求](./http.go)
 - [发送 http post 请求](./http.go)
 - [创建带 querystring 的 http get 请求 url](./http.go)
