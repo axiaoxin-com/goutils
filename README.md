@@ -72,6 +72,9 @@ Golang 通用类函数工具包
 - [Unix 时间戳规整： UnixTImestampTrim](./time.go)
 - [字符串时间转时间对象： StrToTime](./time.go)
 
+### 统计
+- [求float64列表均值](./statistics.go)
+
 ### 其他分类
 
 - [错误码结构体对象封装](./errcode.go)
