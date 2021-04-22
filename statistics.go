@@ -20,10 +20,6 @@ func AvgFloat64(f []float64) (float64, error) {
 
 // VarianceFloat64 求方差
 func VarianceFloat64(fs []float64) (float64, error) {
-	fsLen := len(fs)
-	if fsLen < 2 {
-		return 0, errors.New("slice len must greater than 2")
-	}
 	// 均值
 	favg, err := AvgFloat64(fs)
 	if err != nil {
@@ -32,6 +28,10 @@ func VarianceFloat64(fs []float64) (float64, error) {
 	variance := float64(0)
 	for _, f := range fs {
 		variance += math.Pow(f-favg, 2)
+	}
+	fsLen := len(fs)
+	if fsLen < 2 {
+		return variance, nil
 	}
 	variance = variance / (float64(len(fs) - 1))
 	return variance, nil
