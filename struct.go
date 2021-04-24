@@ -75,7 +75,10 @@ func StructTagList(item interface{}, tag string) []string {
 	tags := []string{}
 	s := reflect.TypeOf(item).Elem()
 	for i := 0; i < s.NumField(); i++ {
-		tags = append(tags, s.Field(i).Tag.Get(tag))
+		tag := s.Field(i).Tag.Get(tag)
+		if tag != "" && tag != "-" {
+			tags = append(tags, tag)
+		}
 	}
 	return tags
 }
