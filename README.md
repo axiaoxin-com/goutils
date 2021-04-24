@@ -56,8 +56,13 @@ Golang 通用类函数工具包
 
 ### URL 相关
 
-- [将结构体指针对象转换为 url.Values: StructToURLValues](./struct.go)
 - [生成 url key: URLKey](./url.go)
+
+### Struct 相关
+
+- [将结构体指针对象转换为 url.Values: StructToURLValues](./struct.go)
+- [将结构体指针对象转换为 map[string]interface{}: StructToMap](./struct.go)
+- [获取结构体指针对象 tag 列表: StructTagList](./struct.go)
 
 ### HTTP 请求相关
 
@@ -73,7 +78,8 @@ Golang 通用类函数工具包
 - [字符串时间转时间对象： StrToTime](./time.go)
 
 ### 统计
-- [求float64列表均值](./statistics.go)
+
+- [求 float64 列表均值](./statistics.go)
 
 ### 其他分类
 

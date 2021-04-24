@@ -42,8 +42,8 @@ func StructToURLValues(item interface{}, tag string) (values url.Values) {
 	return
 }
 
-// StructToMapByTag 结构体转 Map
-func StructToMapByTag(item interface{}, tag string) map[string]interface{} {
+// StructToMap 结构体转 Map
+func StructToMap(item interface{}, tag string) map[string]interface{} {
 
 	res := map[string]interface{}{}
 	if item == nil {
@@ -61,7 +61,7 @@ func StructToMapByTag(item interface{}, tag string) map[string]interface{} {
 		field := reflectValue.Field(i).Interface()
 		if tag != "" && tag != "-" {
 			if v.Field(i).Type.Kind() == reflect.Struct {
-				res[tag] = StructToMapByTag(field, tag)
+				res[tag] = StructToMap(field, tag)
 			} else {
 				res[tag] = field
 			}
@@ -75,7 +75,7 @@ func StructTagList(item interface{}, tag string) []string {
 	tags := []string{}
 	s := reflect.TypeOf(item).Elem()
 	for i := 0; i < s.NumField(); i++ {
-		tags = append(tags, s.Field(i).Tag)
+		tags = append(tags, s.Field(i).Tag.Get(tag))
 	}
 	return tags
 }
