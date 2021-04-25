@@ -5,6 +5,8 @@ package goutils
 import (
 	"regexp"
 	"strings"
+
+	"github.com/antlabs/strsim"
 )
 
 // RemoveAllWhitespace 删除字符串中所有的空白符
@@ -36,4 +38,20 @@ func RemoveDuplicateWhitespace(s string, trim bool) string {
 		s = strings.TrimSpace(s)
 	}
 	return s
+}
+
+// StrSimilarity 提供不同的算法检测文本相似度
+func StrSimilarity(s1, s2 string, algorithm string) float64 {
+	// strsim: 完全相同返回 1，完全不同返回 0
+	switch strings.ToLower(algorithm) {
+	case "levenshtein":
+		return strsim.Compare(s1, s2)
+	case "dice":
+		return strsim.Compare(s1, s2, strsim.DiceCoefficient())
+	case "jaro":
+		return strsim.Compare(s1, s2, strsim.Jaro())
+	case "hamming":
+		return strsim.Compare(s1, s2, strsim.Hamming())
+	}
+	return strsim.Compare(s1, s2, strsim.Hamming())
 }
