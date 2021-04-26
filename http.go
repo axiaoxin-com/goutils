@@ -57,10 +57,10 @@ func HTTPPOST(ctx context.Context, cli *http.Client, req *http.Request, rspPoint
 
 	rspbuf, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return errors.Wrap(err, fmt.Sprint("POST read resp body error, resp.Body:", resp.Body))
+		return errors.Wrap(err, fmt.Sprint("read resp body error, resp.Body:", resp.Body))
 	}
 	if err := json.Unmarshal(rspbuf, rspPointer); err != nil {
-		return errors.Wrap(err, "POST json unmarshal result error")
+		return errors.Wrap(err, fmt.Sprintf("json unmarshal result error, rspbuf:%s", string(rspbuf)))
 	}
 	return nil
 }
@@ -90,10 +90,10 @@ func HTTPGET(ctx context.Context, cli *http.Client, apiurl string, rspPointer in
 
 	rspbuf, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return errors.Wrap(err, fmt.Sprint("GET read resp body error, resp.Body:", resp.Body))
+		return errors.Wrap(err, fmt.Sprint("read resp body error, resp.Body:", resp.Body))
 	}
 	if err := json.Unmarshal(rspbuf, rspPointer); err != nil {
-		return errors.Wrap(err, "GET json unmarshal result error")
+		return errors.Wrap(err, fmt.Sprintf("json unmarshal result error, rspbuf:%s", string(rspbuf)))
 	}
 	return nil
 }
