@@ -27,7 +27,7 @@ func NewHTTPJSONReq(ctx context.Context, apiurl string, reqData interface{}) (*h
 	return req, nil
 }
 
-// NewHTTPMultipartReq 根据参数创建form-data请求
+// NewHTTPMultipartReq 根据参数创建 form-data 请求
 func NewHTTPMultipartReq(ctx context.Context, apiurl string, reqData map[string]string) (*http.Request, error) {
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
@@ -65,7 +65,7 @@ func HTTPPOST(ctx context.Context, cli *http.Client, req *http.Request, rspPoint
 	return nil
 }
 
-// NewHTTPGetURLWithQueryString 创建带querystring的http get 请求url
+// NewHTTPGetURLWithQueryString 创建带 querystring 的 http get 请求 url
 func NewHTTPGetURLWithQueryString(ctx context.Context, apiurl string, params map[string]string) (string, error) {
 	value := url.Values{}
 	u, err := url.Parse(apiurl)
@@ -80,20 +80,29 @@ func NewHTTPGetURLWithQueryString(ctx context.Context, apiurl string, params map
 	return apiurl, nil
 }
 
-// HTTPGET 发送 http get 请求
+// HTTPGET 发送 http get 请求并将返回结果 json unmarshal 到 rspPointer
 func HTTPGET(ctx context.Context, cli *http.Client, apiurl string, rspPointer interface{}) error {
-	resp, err := cli.Get(apiurl)
+	rspbuf, err := HTTPGETRaw(ctx, cli, apiurl)
 	if err != nil {
-		return errors.Wrap(err, "Get request error")
-	}
-	defer resp.Body.Close()
-
-	rspbuf, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return errors.Wrap(err, fmt.Sprint("read resp body error, resp.Body:", resp.Body))
+		return err
 	}
 	if err := json.Unmarshal(rspbuf, rspPointer); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("json unmarshal result error, rspbuf:%s", string(rspbuf)))
 	}
 	return nil
+}
+
+// HTTPGETRaw 发送 http get 请求
+func HTTPGETRaw(ctx context.Context, cli *http.Client, apiurl string) ([]byte, error) {
+	resp, err := cli.Get(apiurl)
+	if err != nil {
+		return nil, errors.Wrap(err, "Get request error")
+	}
+	defer resp.Body.Close()
+
+	rspbuf, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprint("read resp body error, resp.Body:", resp.Body))
+	}
+	return rspbuf, nil
 }
