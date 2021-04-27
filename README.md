@@ -66,11 +66,13 @@ Golang 通用类函数工具包
 
 ### HTTP 请求相关
 
-- [根据参数创建 json post 请求](./http.go)
-- [根据参数创建 form-data post 请求](./http.go)
-- [发送 http post 请求](./http.go)
-- [创建带 querystring 的 http get 请求 url](./http.go)
-- [发送 http get 请求](./http.go)
+- [根据参数创建 json post 请求: NewHTTPJSONReq](./http.go)
+- [根据参数创建 form-data post 请求: NewHTTPMultipartReq](./http.go)
+- [发送 http post 请求: HTTPPOSTRaw](./http.go)
+- [发送 http post 请求并将结果进行 json unmarsal: HTTPPOST](./http.go)
+- [创建带 querystring 的 http get 请求 url: NewHTTPGetURLWithQueryString](./http.go)
+- [发送 http get 请求: HTTPGETRaw](./http.go)
+- [发送 http get 请求并将结果进行 json unmarsal: HTTPGET](./http.go)
 
 ### 时间相关
 
@@ -79,7 +81,9 @@ Golang 通用类函数工具包
 
 ### 统计
 
-- [求 float64 列表均值](./statistics.go)
+- [求 float64 列表均值: AvgFloat64](./statistics.go)
+- [求 float64 列表方差: VarianceFloat64](./statistics.go)
+- [求 float64 列表标准差: StdDeviationFloat64](./statistics.go)
 
 ### 其他分类
 

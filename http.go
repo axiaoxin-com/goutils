@@ -47,22 +47,31 @@ func NewHTTPMultipartReq(ctx context.Context, apiurl string, reqData map[string]
 	return req, nil
 }
 
-// HTTPPOST 发送 http post 请求
+// HTTPPOST 发送 http post 请求并将结果 json unmarshal 到 rspPointer
 func HTTPPOST(ctx context.Context, cli *http.Client, req *http.Request, rspPointer interface{}) error {
-	resp, err := cli.Do(req)
+	rspbuf, err := HTTPPOSTRaw(ctx, cli, req)
 	if err != nil {
-		return errors.Wrap(err, "POST do request error")
-	}
-	defer resp.Body.Close()
-
-	rspbuf, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return errors.Wrap(err, fmt.Sprint("read resp body error, resp.Body:", resp.Body))
+		return err
 	}
 	if err := json.Unmarshal(rspbuf, rspPointer); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("json unmarshal result error, rspbuf:%s", string(rspbuf)))
 	}
 	return nil
+}
+
+// HTTPPOSTRaw 发送 http post 请求
+func HTTPPOSTRaw(ctx context.Context, cli *http.Client, req *http.Request) ([]byte, error) {
+	resp, err := cli.Do(req)
+	if err != nil {
+		return nil, errors.Wrap(err, "POST do request error")
+	}
+	defer resp.Body.Close()
+
+	rspbuf, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprint("read resp body error, resp.Body:", resp.Body))
+	}
+	return rspbuf, nil
 }
 
 // NewHTTPGetURLWithQueryString 创建带 querystring 的 http get 请求 url
