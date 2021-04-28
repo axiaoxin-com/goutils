@@ -84,6 +84,7 @@ Golang 通用类函数工具包
 - [求 float64 列表均值: AvgFloat64](./statistics.go)
 - [求 float64 列表方差: VarianceFloat64](./statistics.go)
 - [求 float64 列表标准差: StdDeviationFloat64](./statistics.go)
+- [求 float64 列表中位数: MidValueFloat64](./statistics.go)
 
 ### 其他分类
 

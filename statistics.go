@@ -3,6 +3,7 @@ package goutils
 import (
 	"errors"
 	"math"
+	"sort"
 )
 
 // AvgFloat64 平均值
@@ -44,4 +45,19 @@ func StdDeviationFloat64(fs []float64) (float64, error) {
 		return 0, err
 	}
 	return math.Sqrt(v), nil
+}
+
+// MidValueFloat64 获取中位数
+func MidValueFloat64(values []float64) (float64, error) {
+	vlen := len(values)
+	if vlen == 0 {
+		return 0, errors.New("no data")
+	}
+	sort.Float64s(values)
+	mid := vlen / 2
+	if vlen%2 == 0 {
+		return (values[mid-1] + values[mid]) / 2.0, nil
+	}
+	return values[mid], nil
+
 }
