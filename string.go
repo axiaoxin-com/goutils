@@ -3,6 +3,7 @@
 package goutils
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -54,4 +55,20 @@ func StrSimilarity(s1, s2 string, algorithm string) float64 {
 		return strsim.Compare(s1, s2, strsim.Hamming())
 	}
 	return strsim.Compare(s1, s2, strsim.Hamming())
+}
+
+// YiWanString 将数字转换为 亿/万
+func YiWanString(num float64) string {
+	YI := float64(100000000.0)
+	WAN := float64(10000.0)
+	yi := num / YI
+	if yi >= 1 {
+		return fmt.Sprintf("%.2f 亿", yi)
+	}
+	wan := num / WAN
+	if wan >= 1 {
+		return fmt.Sprintf("%.2f 万", wan)
+	}
+	return fmt.Sprint(num)
+
 }
