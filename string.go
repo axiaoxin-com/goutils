@@ -4,6 +4,7 @@ package goutils
 
 import (
 	"fmt"
+	"math"
 	"regexp"
 	"strings"
 
@@ -61,11 +62,11 @@ func StrSimilarity(s1, s2 string, algorithm string) float64 {
 func YiWanString(num float64) string {
 	YI := float64(100000000.0)
 	WAN := float64(10000.0)
-	yi := num / YI
+	yi := math.Abs(num / YI)
 	if yi >= 1 {
 		return fmt.Sprintf("%.2f 亿", yi)
 	}
-	wan := num / WAN
+	wan := math.Abs(num / WAN)
 	if wan >= 1 {
 		return fmt.Sprintf("%.2f 万", wan)
 	}
