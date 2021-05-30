@@ -62,12 +62,12 @@ func StrSimilarity(s1, s2 string, algorithm string) float64 {
 func YiWanString(num float64) string {
 	YI := float64(100000000.0)
 	WAN := float64(10000.0)
-	yi := math.Abs(num / YI)
-	if yi >= 1 {
+	yi := num / YI
+	if math.Abs(yi) >= 1 {
 		return fmt.Sprintf("%.2f 亿", yi)
 	}
-	wan := math.Abs(num / WAN)
-	if wan >= 1 {
+	wan := num / WAN
+	if math.Abs(wan) >= 1 {
 		return fmt.Sprintf("%.2f 万", wan)
 	}
 	return fmt.Sprint(num)
