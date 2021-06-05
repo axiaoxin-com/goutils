@@ -9,7 +9,6 @@ import (
 
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 
 	// need by gorm
 	"gorm.io/driver/mysql"
@@ -146,26 +145,6 @@ func GormMySQL(which string) (*gorm.DB, error) {
 		ReadTimeout:        viper.GetInt(prefix + ".read_timeout"),
 		WriteTimeout:       viper.GetInt(prefix + ".write_timeout"),
 		DisableSSL:         false,
-		GormConfig: &gorm.Config{
-			SkipDefaultTransaction:                   false,
-			NamingStrategy:                           nil,
-			FullSaveAssociations:                     false,
-			Logger:                                   nil,
-			NowFunc:                                  func() time.Time { panic("not implemented") },
-			DryRun:                                   false,
-			PrepareStmt:                              false,
-			DisableAutomaticPing:                     false,
-			DisableForeignKeyConstraintWhenMigrating: false,
-			AllowGlobalUpdate:                        false,
-			ClauseBuilders: map[string]clause.ClauseBuilder{
-				"": func(clause.Clause, clause.Builder) { panic("not implemented") },
-			},
-			ConnPool:  nil,
-			Dialector: nil,
-			Plugins: map[string]gorm.Plugin{
-				"": nil,
-			},
-		},
 	}
 	db, err := NewGormMySQL(conf)
 	if err != nil {
