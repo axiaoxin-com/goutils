@@ -9,6 +9,7 @@ import (
 
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	// need by gorm
 	"gorm.io/driver/mysql"
@@ -19,9 +20,9 @@ import (
 
 // GormBaseModel 基础 model 定义
 type GormBaseModel struct {
-	ID        string   `gorm:"primary_key,column:id" json:"id" example:"-"`     // 字符串类型的 Hash 主键 ID
-	CreatedAt JSONTime `gorm:"column:created_at" json:"created_at" example:"-"` // 创建时间
-	UpdatedAt JSONTime `gorm:"column:updated_at" json:"updated_at" example:"-"` // 更新时间
+	ID        string   `gorm:"primary_key,column:id" json:"id"         example:"-"` // 字符串类型的 Hash 主键 ID
+	CreatedAt JSONTime `gorm:"column:created_at"     json:"created_at" example:"-"` // 创建时间
+	UpdatedAt JSONTime `gorm:"column:updated_at"     json:"updated_at" example:"-"` // 更新时间
 }
 
 // NewGormSQLite3 返回 gorm sqlite3 连接实例
@@ -131,6 +132,7 @@ func GormMySQL(which string) (*gorm.DB, error) {
 	// 注意：这里依赖 viper ，必须在外部先对 viper 配置进行加载
 	prefix := "mysql." + which
 	conf := DBConfig{
+		DriverName:         "",
 		Host:               viper.GetString(prefix + ".host"),
 		Port:               viper.GetInt(prefix + ".port"),
 		Username:           viper.GetString(prefix + ".username"),
@@ -143,6 +145,27 @@ func GormMySQL(which string) (*gorm.DB, error) {
 		ConnTimeout:        viper.GetInt(prefix + ".conn_timeout"),
 		ReadTimeout:        viper.GetInt(prefix + ".read_timeout"),
 		WriteTimeout:       viper.GetInt(prefix + ".write_timeout"),
+		DisableSSL:         false,
+		GormConfig: &gorm.Config{
+			SkipDefaultTransaction:                   false,
+			NamingStrategy:                           nil,
+			FullSaveAssociations:                     false,
+			Logger:                                   nil,
+			NowFunc:                                  func() time.Time { panic("not implemented") },
+			DryRun:                                   false,
+			PrepareStmt:                              false,
+			DisableAutomaticPing:                     false,
+			DisableForeignKeyConstraintWhenMigrating: false,
+			AllowGlobalUpdate:                        false,
+			ClauseBuilders: map[string]clause.ClauseBuilder{
+				"": func(clause.Clause, clause.Builder) { panic("not implemented") },
+			},
+			ConnPool:  nil,
+			Dialector: nil,
+			Plugins: map[string]gorm.Plugin{
+				"": nil,
+			},
+		},
 	}
 	db, err := NewGormMySQL(conf)
 	if err != nil {
