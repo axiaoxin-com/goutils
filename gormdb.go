@@ -31,6 +31,10 @@ func NewGormSQLite3(conf DBConfig) (*gorm.DB, error) {
 		return nil, err
 	}
 
+	if conf.GormConfig == nil {
+		conf.GormConfig = &gorm.Config{}
+	}
+
 	gormSqlite3, err := gorm.Open(sqlite.Open(dsn), conf.GormConfig)
 	if err != nil {
 		return nil, err
@@ -50,6 +54,10 @@ func NewGormMySQL(conf DBConfig) (*gorm.DB, error) {
 	dsn, err := conf.MySQLDSN()
 	if err != nil {
 		return nil, err
+	}
+
+	if conf.GormConfig == nil {
+		conf.GormConfig = &gorm.Config{}
 	}
 
 	gormMysql, err := gorm.Open(mysql.Open(dsn), conf.GormConfig)
@@ -73,6 +81,10 @@ func NewGormPostgres(conf DBConfig) (*gorm.DB, error) {
 		return nil, err
 	}
 
+	if conf.GormConfig == nil {
+		conf.GormConfig = &gorm.Config{}
+	}
+
 	gormPostgres, err := gorm.Open(postgres.Open(dsn), conf.GormConfig)
 	if err != nil {
 		return nil, err
@@ -89,6 +101,10 @@ func NewGormSqlserver(conf DBConfig) (*gorm.DB, error) {
 	dsn, err := conf.SqlserverDSN()
 	if err != nil {
 		return nil, err
+	}
+
+	if conf.GormConfig == nil {
+		conf.GormConfig = &gorm.Config{}
 	}
 
 	gormSqlserver, err := gorm.Open(sqlserver.Open(dsn), conf.GormConfig)
