@@ -2,7 +2,9 @@
 
 package goutils
 
-import "math"
+import (
+	"math"
+)
 
 // Pagination Paginate return it
 // 异常数据时分页总数为 0 ，当前页码、上下页码均不判断逻辑，只管数值增减
@@ -41,8 +43,14 @@ func PaginateByPageNumSize(totalCount, pageNum, pageSize int) Pagination {
 	pagesCount := int(math.Ceil(float64(totalCount) / float64(pageSize)))
 	nextPageNum := pageNum + 1
 	hasNext := nextPageNum <= pagesCount
+	if nextPageNum > pagesCount {
+		nextPageNum = 1
+	}
 	prevPageNum := pageNum - 1
 	hasPrev := prevPageNum > 0
+	if prevPageNum < 1 {
+		prevPageNum = 1
+	}
 	return Pagination{
 		TotalCount:  totalCount,
 		PagesCount:  pagesCount,
