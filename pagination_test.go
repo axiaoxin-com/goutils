@@ -7,6 +7,7 @@ func TestPaginateByPageNumSize(t *testing.T) {
 	if p.PagesCount != 10 || p.HasNext != true || p.HasPrev != false {
 		t.Fatalf("paginate error %+v", p)
 	}
+	t.Logf("%+v", p)
 	p = PaginateByPageNumSize(100, 3, 13)
 	if p.PagesCount != 8 || p.HasNext != true || p.HasPrev != true {
 		t.Fatalf("paginate error %+v", p)
