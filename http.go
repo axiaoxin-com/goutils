@@ -3,19 +3,19 @@ package goutils
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/url"
 
+	jsoniter "github.com/json-iterator/go"
 	"github.com/pkg/errors"
 )
 
 // NewHTTPJSONReq 根据参数创建 json 请求
 func NewHTTPJSONReq(ctx context.Context, apiurl string, reqData interface{}) (*http.Request, error) {
-	reqbuf, err := json.Marshal(reqData)
+	reqbuf, err := jsoniter.Marshal(reqData)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprint("json marshal error"))
 	}
@@ -53,7 +53,7 @@ func HTTPPOST(ctx context.Context, cli *http.Client, req *http.Request, rspPoint
 	if err != nil {
 		return err
 	}
-	if err := json.Unmarshal(rspbuf, rspPointer); err != nil {
+	if err := jsoniter.Unmarshal(rspbuf, rspPointer); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("json unmarshal result error, rspbuf:%s", string(rspbuf)))
 	}
 	return nil
@@ -95,7 +95,7 @@ func HTTPGET(ctx context.Context, cli *http.Client, apiurl string, rspPointer in
 	if err != nil {
 		return err
 	}
-	if err := json.Unmarshal(rspbuf, rspPointer); err != nil {
+	if err := jsoniter.Unmarshal(rspbuf, rspPointer); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("json unmarshal result error, rspbuf:%s", string(rspbuf)))
 	}
 	return nil
