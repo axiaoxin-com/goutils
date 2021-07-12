@@ -4,6 +4,8 @@ import (
 	"errors"
 	"math"
 	"sort"
+
+	mapset "github.com/deckarep/golang-set"
 )
 
 // AvgFloat64 平均值
@@ -60,4 +62,15 @@ func MidValueFloat64(values []float64) (float64, error) {
 	}
 	return values[mid], nil
 
+}
+
+// JaccardSimilarity Jaccard similarity相似性系数
+// J(A, B) = |A ∩ B | / | A ∪ B |
+// A,B分别代表符合某种条件的集合：两个集合交集的大小/两个集合并集的大小，交集=并集意味着2个集合完全重合。
+func JaccardSimilarity(s1, s2 []interface{}) float64 {
+	A := mapset.NewSetFromSlice(s1)
+	B := mapset.NewSetFromSlice(s2)
+	AiB := A.Intersect(B)
+	AuB := A.Union(B)
+	return float64(AiB.Cardinality()) / float64(AuB.Cardinality())
 }
