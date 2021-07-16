@@ -54,13 +54,17 @@ func IsIntInSlice(i int, s []int) bool {
 	return (index < len(s) && s[index] == i)
 }
 
-<<<<<<< HEAD
 // ReverseFloat64Slice 直接反转 float64 列表，无返回值
-=======
-// ReverseFloat64Slice 反转 float64 列表
->>>>>>> 65e45ce... reverse float64 slice
 func ReverseFloat64Slice(numbers []float64) {
 	for i, j := 0, len(numbers)-1; i < j; i, j = i+1, j-1 {
 		numbers[i], numbers[j] = numbers[j], numbers[i]
 	}
+}
+
+// ReversedFloat64Slice 反转 float64 列表，有返回值
+func ReversedFloat64Slice(numbers []float64) []float64 {
+	for i, j := 0, len(numbers)-1; i < j; i, j = i+1, j-1 {
+		numbers[i], numbers[j] = numbers[j], numbers[i]
+	}
+	return numbers
 }
