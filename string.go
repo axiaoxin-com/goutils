@@ -73,3 +73,8 @@ func YiWanString(num float64) string {
 	return fmt.Sprint(num)
 
 }
+
+// SplitStringFields 将传入字符串分割为slice
+func SplitStringFields(s string) []string {
+	return regexp.MustCompile("[\\/\\:\\,\\;\\.\\s\\-\\|\\#\\$\\%\\&\\+\\=\\?]+").Split(s, -1)
+}
