@@ -8,6 +8,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"time"
 
 	jsoniter "github.com/json-iterator/go"
 	"github.com/pkg/errors"
@@ -24,6 +25,7 @@ func NewHTTPJSONReq(ctx context.Context, apiurl string, reqData interface{}) (*h
 		return nil, errors.Wrap(err, "Post NewRequestWithContext")
 	}
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("User-Agent", "app-iphone-client-iPhone11,"+fmt.Sprint(time.Now().Unix()))
 	return req, nil
 }
 
@@ -44,6 +46,7 @@ func NewHTTPMultipartReq(ctx context.Context, apiurl string, reqData map[string]
 		return nil, errors.Wrap(err, "NewRequestWithContext error")
 	}
 	req.Header.Set("Content-Type", writer.FormDataContentType())
+	req.Header.Set("User-Agent", "app-iphone-client-iPhone11,"+fmt.Sprint(time.Now().Unix()))
 	return req, nil
 }
 
@@ -103,7 +106,12 @@ func HTTPGET(ctx context.Context, cli *http.Client, apiurl string, rspPointer in
 
 // HTTPGETRaw 发送 http get 请求
 func HTTPGETRaw(ctx context.Context, cli *http.Client, apiurl string) ([]byte, error) {
-	resp, err := cli.Get(apiurl)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, apiurl, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "NewRequestWithContext error")
+	}
+	req.Header.Set("User-Agent", "app-iphone-client-iPhone11,"+fmt.Sprint(time.Now().Unix()))
+	resp, err := cli.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(err, "Get request error")
 	}
