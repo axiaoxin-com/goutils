@@ -93,8 +93,8 @@ func NewHTTPGetURLWithQueryString(ctx context.Context, apiurl string, params map
 }
 
 // HTTPGET 发送 http get 请求并将返回结果 json unmarshal 到 rspPointer
-func HTTPGET(ctx context.Context, cli *http.Client, apiurl string, rspPointer interface{}) error {
-	rspbuf, err := HTTPGETRaw(ctx, cli, apiurl, nil)
+func HTTPGET(ctx context.Context, cli *http.Client, apiurl string, header map[string]string, rspPointer interface{}) error {
+	rspbuf, err := HTTPGETRaw(ctx, cli, apiurl, header)
 	if err != nil {
 		return err
 	}
