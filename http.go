@@ -94,7 +94,7 @@ func NewHTTPGetURLWithQueryString(ctx context.Context, apiurl string, params map
 
 // HTTPGET 发送 http get 请求并将返回结果 json unmarshal 到 rspPointer
 func HTTPGET(ctx context.Context, cli *http.Client, apiurl string, rspPointer interface{}) error {
-	rspbuf, err := HTTPGETRaw(ctx, cli, apiurl)
+	rspbuf, err := HTTPGETRaw(ctx, cli, apiurl, nil)
 	if err != nil {
 		return err
 	}
@@ -105,12 +105,14 @@ func HTTPGET(ctx context.Context, cli *http.Client, apiurl string, rspPointer in
 }
 
 // HTTPGETRaw 发送 http get 请求
-func HTTPGETRaw(ctx context.Context, cli *http.Client, apiurl string) ([]byte, error) {
+func HTTPGETRaw(ctx context.Context, cli *http.Client, apiurl string, header map[string]string) ([]byte, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, apiurl, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "NewRequestWithContext error")
 	}
-	req.Header.Set("User-Agent", "app-iphone-client-iPhone11,"+fmt.Sprint(time.Now().Unix()))
+	for k, v := range header {
+		req.Header.Set(k, v)
+	}
 	resp, err := cli.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(err, "Get request error")
