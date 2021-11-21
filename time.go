@@ -2,7 +2,10 @@
 
 package goutils
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // UnixTimestampTrim 将 Unix 时间戳（秒）以指定秒数进行规整
 func UnixTimestampTrim(ts int64, sec int64) int64 {
@@ -18,15 +21,25 @@ func StrToTime(layout, value string, loc ...*time.Location) (time.Time, error) {
 	return time.ParseInLocation(layout, value, location)
 }
 
-// GetLatestWorkingDay 返回最近一个工作日时间
-func GetLatestWorkingDay() time.Time {
+// GetLatestTradingDay 返回最近一个交易日string类型日期：YYYY-mm-dd
+func GetLatestTradingDay() string {
 	today := time.Now()
-	weekday := today.Weekday()
+	holidays := ChinaHolidays[fmt.Sprint(today.Year())]
+	day := today
+	for {
+		date := day.Format("2006-01-02")
+		if holidays[date] {
+			day = day.AddDate(0, 0, -1)
+		} else {
+			break
+		}
+	}
+	weekday := day.Weekday()
 	switch weekday {
 	case time.Saturday:
-		return today.AddDate(0, 0, -1)
+		day = day.AddDate(0, 0, -1)
 	case time.Sunday:
-		return today.AddDate(0, 0, -2)
+		day = day.AddDate(0, 0, -2)
 	}
-	return today
+	return day.Format("2006-01-02")
 }

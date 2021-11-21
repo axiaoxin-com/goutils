@@ -78,7 +78,7 @@ Golang 通用类函数工具包
 
 - [Unix 时间戳规整： UnixTImestampTrim](./time.go)
 - [字符串时间转时间对象： StrToTime](./time.go)
-- [获取最近一个工作日时间： GetLatestWorkingDay](./time.go)
+- [获取最近一个交易日日期： GetLatestTradingDay](./time.go)
 
 ### 统计
 
