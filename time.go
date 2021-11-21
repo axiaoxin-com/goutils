@@ -17,3 +17,16 @@ func StrToTime(layout, value string, loc ...*time.Location) (time.Time, error) {
 	}
 	return time.ParseInLocation(layout, value, location)
 }
+
+// GetLatestWorkingDay 返回最近一个工作日时间
+func GetLatestWorkingDay() time.Time {
+	today := time.Now()
+	weekday := today.Weekday()
+	switch weekday {
+	case time.Saturday:
+		return today.AddDate(0, 0, -1)
+	case time.Sunday:
+		return today.AddDate(0, 0, -2)
+	}
+	return today
+}
