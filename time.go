@@ -43,3 +43,17 @@ func GetLatestTradingDay() string {
 	}
 	return day.Format("2006-01-02")
 }
+
+// IsTradingDay 返回当期是否为交易日
+func IsTradingDay() bool {
+	today := time.Now()
+	weekday := today.Weekday()
+	if weekday == time.Saturday || weekday == time.Sunday {
+		return false
+	}
+	holidays := ChinaHolidays[fmt.Sprint(today.Year())]
+	if holidays[today.Format("2006-01-02")] {
+		return false
+	}
+	return true
+}
