@@ -24,9 +24,9 @@ type GormBaseModel struct {
 	UpdatedAt JSONTime `gorm:"column:updated_at"     json:"updated_at" example:"-"` // 更新时间
 }
 
-// NewGormSQLite3 返回 gorm sqlite3 连接实例
-func NewGormSQLite3(conf DBConfig) (*gorm.DB, error) {
-	dsn, err := conf.SQLite3DSN()
+// NewGormSQLite 返回 gorm sqlite 连接实例
+func NewGormSQLite(conf DBConfig) (*gorm.DB, error) {
+	dsn, err := conf.SQLiteDSN()
 	if err != nil {
 		return nil, err
 	}
@@ -35,18 +35,18 @@ func NewGormSQLite3(conf DBConfig) (*gorm.DB, error) {
 		conf.GormConfig = &gorm.Config{}
 	}
 
-	gormSqlite3, err := gorm.Open(sqlite.Open(dsn), conf.GormConfig)
+	gormSqlite, err := gorm.Open(sqlite.Open(dsn), conf.GormConfig)
 	if err != nil {
 		return nil, err
 	}
-	sqlite3db, err := gormSqlite3.DB()
+	sqlitedb, err := gormSqlite.DB()
 	if err != nil {
 		return nil, err
 	}
-	sqlite3db.SetMaxIdleConns(conf.MaxIdleConns)
-	sqlite3db.SetMaxOpenConns(conf.MaxOpenConns)
-	sqlite3db.SetConnMaxLifetime(time.Duration(conf.ConnMaxLifeMinutes) * time.Minute)
-	return gormSqlite3, nil
+	sqlitedb.SetMaxIdleConns(conf.MaxIdleConns)
+	sqlitedb.SetMaxOpenConns(conf.MaxOpenConns)
+	sqlitedb.SetConnMaxLifetime(time.Duration(conf.ConnMaxLifeMinutes) * time.Minute)
+	return gormSqlite, nil
 }
 
 // NewGormMySQL 返回 gorm mysql 连接实例
@@ -170,15 +170,15 @@ func GormMySQL(which string) (*gorm.DB, error) {
 	return db, nil
 }
 
-// GormSQLite3 根据  viper 配置中的实例名称返回 sqlite3 实例
-func GormSQLite3(which string) (*gorm.DB, error) {
-	sqlite3s, loaded := GormInstances.LoadOrStore("sqlite3", new(sync.Map))
+// GormSQLite 根据  viper 配置中的实例名称返回 sqlite 实例
+func GormSQLite(which string) (*gorm.DB, error) {
+	sqlites, loaded := GormInstances.LoadOrStore("sqlite", new(sync.Map))
 	if loaded {
-		if db, loaded := sqlite3s.(*sync.Map).Load(which); loaded {
+		if db, loaded := sqlites.(*sync.Map).Load(which); loaded {
 			return db.(*gorm.DB), nil
 		}
 	}
-	prefix := "sqlite3." + which
+	prefix := "sqlite." + which
 	conf := DBConfig{
 		DBName:             viper.GetString(prefix + ".dbname"),
 		LogMode:            viper.GetBool(prefix + ".log_mode"),
@@ -186,12 +186,12 @@ func GormSQLite3(which string) (*gorm.DB, error) {
 		MaxOpenConns:       viper.GetInt(prefix + ".max_open_conns"),
 		ConnMaxLifeMinutes: viper.GetInt(prefix + ".conn_max_life_minutes"),
 	}
-	db, err := NewGormSQLite3(conf)
+	db, err := NewGormSQLite(conf)
 	if err != nil {
 		return nil, err
 	}
-	sqlite3s.(*sync.Map).Store(which, db)
-	GormInstances.Store("sqlite3", sqlite3s)
+	sqlites.(*sync.Map).Store(which, db)
+	GormInstances.Store("sqlite", sqlites)
 	return db, nil
 }
 

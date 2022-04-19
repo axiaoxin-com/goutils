@@ -48,10 +48,10 @@ func (conf DBConfig) MySQLDSN() (string, error) {
 	return fmt.Sprintf("%s:%s@(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local&timeout=%ds&readTimeout=%ds&writeTimeout=%ds", conf.Username, conf.Password, conf.Host, conf.Port, conf.DBName, conf.ConnTimeout, conf.ReadTimeout, conf.WriteTimeout), nil
 }
 
-// SQLite3DSN 返回 sqlite3 文件名
-func (conf DBConfig) SQLite3DSN() (string, error) {
+// SQLiteDSN 返回 sqlite 文件名
+func (conf DBConfig) SQLiteDSN() (string, error) {
 	if conf.DBName == "" {
-		return "", errors.New("DBConfig for SQLite3 is empty")
+		return "", errors.New("DBConfig for SQLite is empty")
 	}
 
 	return conf.DBName, nil

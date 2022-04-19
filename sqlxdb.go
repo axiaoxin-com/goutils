@@ -10,21 +10,21 @@ import (
 	"github.com/spf13/viper"
 )
 
-// NewSqlxSQLite3 返回 sqlx sqlite3 连接实例
-func NewSqlxSQLite3(conf DBConfig) (*sqlx.DB, error) {
-	dsn, err := conf.SQLite3DSN()
+// NewSqlxSQLite 返回 sqlx sqlite 连接实例
+func NewSqlxSQLite(conf DBConfig) (*sqlx.DB, error) {
+	dsn, err := conf.SQLiteDSN()
 	if err != nil {
 		return nil, err
 	}
 
-	sqlxSqlite3, err := sqlx.Open("sqlite3", dsn)
+	sqlxSqlite, err := sqlx.Open("sqlite", dsn)
 	if err != nil {
 		return nil, err
 	}
-	sqlxSqlite3.SetMaxIdleConns(conf.MaxIdleConns)
-	sqlxSqlite3.SetMaxOpenConns(conf.MaxOpenConns)
-	sqlxSqlite3.SetConnMaxLifetime(time.Duration(conf.ConnMaxLifeMinutes) * time.Minute)
-	return sqlxSqlite3, nil
+	sqlxSqlite.SetMaxIdleConns(conf.MaxIdleConns)
+	sqlxSqlite.SetMaxOpenConns(conf.MaxOpenConns)
+	sqlxSqlite.SetConnMaxLifetime(time.Duration(conf.ConnMaxLifeMinutes) * time.Minute)
+	return sqlxSqlite, nil
 }
 
 // NewSqlxMySQL 返回 sqlx mysql 连接实例
@@ -117,15 +117,15 @@ func SqlxMySQL(which string) (*sqlx.DB, error) {
 	return db, nil
 }
 
-// SqlxSQLite3 根据  viper 中配置的实例名称返回 sqlite3 实例
-func SqlxSQLite3(which string) (*sqlx.DB, error) {
-	sqlite3s, loaded := SqlxInstances.LoadOrStore("sqlite3", new(sync.Map))
+// SqlxSQLite 根据  viper 中配置的实例名称返回 sqlite 实例
+func SqlxSQLite(which string) (*sqlx.DB, error) {
+	sqlites, loaded := SqlxInstances.LoadOrStore("sqlite", new(sync.Map))
 	if loaded {
-		if db, loaded := sqlite3s.(*sync.Map).Load(which); loaded {
+		if db, loaded := sqlites.(*sync.Map).Load(which); loaded {
 			return db.(*sqlx.DB), nil
 		}
 	}
-	prefix := "sqlite3." + which
+	prefix := "sqlite." + which
 	conf := DBConfig{
 		DBName:             viper.GetString(prefix + ".dbname"),
 		LogMode:            viper.GetBool(prefix + ".log_mode"),
@@ -133,12 +133,12 @@ func SqlxSQLite3(which string) (*sqlx.DB, error) {
 		MaxOpenConns:       viper.GetInt(prefix + ".max_open_conns"),
 		ConnMaxLifeMinutes: viper.GetInt(prefix + ".conn_max_life_minutes"),
 	}
-	db, err := NewSqlxSQLite3(conf)
+	db, err := NewSqlxSQLite(conf)
 	if err != nil {
 		return nil, err
 	}
-	sqlite3s.(*sync.Map).Store(which, db)
-	SqlxInstances.Store("sqlite3", sqlite3s)
+	sqlites.(*sync.Map).Store(which, db)
+	SqlxInstances.Store("sqlite", sqlites)
 	return db, nil
 }
 

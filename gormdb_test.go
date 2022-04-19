@@ -8,14 +8,14 @@ import (
 	"github.com/spf13/viper"
 )
 
-func TestNewGormSQLite3(t *testing.T) {
-	dbname := "db.sqlite3"
+func TestNewGormSQLite(t *testing.T) {
+	dbname := "db.sqlite"
 	conf := DBConfig{
 		DBName: dbname,
 	}
-	db, err := NewGormSQLite3(conf)
+	db, err := NewGormSQLite(conf)
 	if err != nil {
-		t.Error("new gorm sqlite3 return error:", err)
+		t.Error("new gorm sqlite return error:", err)
 	}
 	sqlDB, err := db.DB()
 	if err != nil {
@@ -111,11 +111,11 @@ func TestGormMySQL(t *testing.T) {
 	}
 }
 
-func TestGormSQLite3(t *testing.T) {
+func TestGormSQLite(t *testing.T) {
 	defer viper.Reset()
-	dbname := "db.sqlite3"
-	viper.Set("sqlite3.unittest.dbname", dbname)
-	if db, err := GormSQLite3("unittest"); err != nil {
+	dbname := "db.sqlite"
+	viper.Set("sqlite.unittest.dbname", dbname)
+	if db, err := GormSQLite("unittest"); err != nil {
 		t.Fatal(err)
 	} else if db == nil {
 		t.Fatal("db is nil")
@@ -131,21 +131,21 @@ func TestGormSQLite3(t *testing.T) {
 
 	defer CloseGormInstances()
 	defer os.Remove(dbname)
-	if _, err := GormSQLite3("unittest"); err != nil {
+	if _, err := GormSQLite("unittest"); err != nil {
 		t.Error(err)
 	}
-	viper.Set("sqlite3.other.dbname", "other."+dbname)
-	if _, err := GormSQLite3("other"); err != nil {
+	viper.Set("sqlite.other.dbname", "other."+dbname)
+	if _, err := GormSQLite("other"); err != nil {
 		t.Error(err)
 	}
 	defer os.Remove("other." + dbname)
 	instanceCount := 0
-	sqlite3Count := 0
+	sqliteCount := 0
 	GormInstances.Range(func(k, v interface{}) bool {
 		instanceCount++
-		if k.(string) == "sqlite3" {
+		if k.(string) == "sqlite" {
 			v.(*sync.Map).Range(func(kk, vv interface{}) bool {
-				sqlite3Count++
+				sqliteCount++
 				return true
 			})
 		}
@@ -154,8 +154,8 @@ func TestGormSQLite3(t *testing.T) {
 	if instanceCount != 1 {
 		t.Error("instanceCount != 1, ", instanceCount)
 	}
-	if sqlite3Count != 2 {
-		t.Error("sqlite3Count != 2, ", sqlite3Count)
+	if sqliteCount != 2 {
+		t.Error("sqliteCount != 2, ", sqliteCount)
 	}
 }
 
@@ -183,9 +183,9 @@ func TestCloseGormInstances(t *testing.T) {
 	if _, loaded := GormInstances.Load("mysql"); !loaded {
 		t.Error("mysql should be loaded")
 	}
-	dbname := "db.sqlite3"
-	viper.Set("sqlite3.unittest.dbname", dbname)
-	if db, err := GormSQLite3("unittest"); err != nil {
+	dbname := "db.sqlite"
+	viper.Set("sqlite.unittest.dbname", dbname)
+	if db, err := GormSQLite("unittest"); err != nil {
 		t.Fatal(err)
 	} else if db == nil {
 		t.Fatal("db is nil")
@@ -199,14 +199,14 @@ func TestCloseGormInstances(t *testing.T) {
 		}
 	}
 
-	if _, loaded := GormInstances.Load("sqlite3"); !loaded {
-		t.Error("sqlite3 should be loaded")
+	if _, loaded := GormInstances.Load("sqlite"); !loaded {
+		t.Error("sqlite should be loaded")
 	}
 	defer os.Remove(dbname)
 	CloseGormInstances()
 
-	if _, loaded := GormInstances.Load("sqlite3"); loaded {
-		t.Error("sqlite3 should not be loaded")
+	if _, loaded := GormInstances.Load("sqlite"); loaded {
+		t.Error("sqlite should not be loaded")
 	}
 	if _, loaded := GormInstances.Load("mysql"); loaded {
 		t.Error("mysql should not be loaded")

@@ -8,14 +8,14 @@ import (
 	"github.com/spf13/viper"
 )
 
-func TestNewSqlxQLite3(t *testing.T) {
-	dbname := "./db.sqlite3"
+func TestNewSqlxSQLite(t *testing.T) {
+	dbname := "./db.sqlite"
 	conf := DBConfig{
 		DBName: dbname,
 	}
-	db, err := NewSqlxSQLite3(conf)
+	db, err := NewSqlxSQLite(conf)
 	if err != nil {
-		t.Error("new sqlx sqlite3 return error:", err)
+		t.Error("new sqlx sqlite return error:", err)
 	}
 	defer db.Close()
 	defer os.Remove(dbname)
@@ -88,11 +88,11 @@ func TestSqlxMySQL(t *testing.T) {
 	}
 }
 
-func TestSqlxSQLite3(t *testing.T) {
+func TestSqlxSQLite(t *testing.T) {
 	defer viper.Reset()
-	dbname := "db.sqlite3"
-	viper.Set("sqlite3.unittest.dbname", dbname)
-	if db, err := SqlxSQLite3("unittest"); err != nil {
+	dbname := "db.sqlite"
+	viper.Set("sqlite.unittest.dbname", dbname)
+	if db, err := SqlxSQLite("unittest"); err != nil {
 		t.Fatal(err)
 	} else if db == nil {
 		t.Fatal("db is nil")
@@ -101,21 +101,21 @@ func TestSqlxSQLite3(t *testing.T) {
 	}
 	defer CloseSqlxInstances()
 	defer os.Remove(dbname)
-	if _, err := SqlxSQLite3("unittest"); err != nil {
+	if _, err := SqlxSQLite("unittest"); err != nil {
 		t.Error(err)
 	}
-	viper.Set("sqlite3.other.dbname", "other."+dbname)
-	if _, err := SqlxSQLite3("other"); err != nil {
+	viper.Set("sqlite.other.dbname", "other."+dbname)
+	if _, err := SqlxSQLite("other"); err != nil {
 		t.Error(err)
 	}
 	defer os.Remove("other." + dbname)
 	instanceCount := 0
-	sqlite3Count := 0
+	sqliteCount := 0
 	SqlxInstances.Range(func(k, v interface{}) bool {
 		instanceCount++
-		if k.(string) == "sqlite3" {
+		if k.(string) == "sqlite" {
 			v.(*sync.Map).Range(func(kk, vv interface{}) bool {
-				sqlite3Count++
+				sqliteCount++
 				return true
 			})
 		}
@@ -124,8 +124,8 @@ func TestSqlxSQLite3(t *testing.T) {
 	if instanceCount != 1 {
 		t.Error("instanceCount != 1, ", instanceCount)
 	}
-	if sqlite3Count != 2 {
-		t.Error("sqlite3Count != 2, ", sqlite3Count)
+	if sqliteCount != 2 {
+		t.Error("sqliteCount != 2, ", sqliteCount)
 	}
 }
 
@@ -146,23 +146,23 @@ func TestCloseSqlxInstances(t *testing.T) {
 	if _, loaded := SqlxInstances.Load("mysql"); !loaded {
 		t.Error("mysql should be loaded")
 	}
-	dbname := "db.sqlite3"
-	viper.Set("sqlite3.unittest.dbname", dbname)
-	if db, err := SqlxSQLite3("unittest"); err != nil {
+	dbname := "db.sqlite"
+	viper.Set("sqlite.unittest.dbname", dbname)
+	if db, err := SqlxSQLite("unittest"); err != nil {
 		t.Fatal(err)
 	} else if db == nil {
 		t.Fatal("db is nil")
 	} else if err := db.Ping(); err != nil {
 		t.Error(err)
 	}
-	if _, loaded := SqlxInstances.Load("sqlite3"); !loaded {
-		t.Error("sqlite3 should be loaded")
+	if _, loaded := SqlxInstances.Load("sqlite"); !loaded {
+		t.Error("sqlite should be loaded")
 	}
 	defer os.Remove(dbname)
 	CloseSqlxInstances()
 
-	if _, loaded := SqlxInstances.Load("sqlite3"); loaded {
-		t.Error("sqlite3 should not be loaded")
+	if _, loaded := SqlxInstances.Load("sqlite"); loaded {
+		t.Error("sqlite should not be loaded")
 	}
 	if _, loaded := SqlxInstances.Load("mysql"); loaded {
 		t.Error("mysql should not be loaded")

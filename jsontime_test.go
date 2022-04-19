@@ -34,7 +34,7 @@ func TestJSONTimeInGORM(t *testing.T) {
 	conf := DBConfig{
 		DBName: dbname,
 	}
-	db, err := NewGormSQLite3(conf)
+	db, err := NewGormSQLite(conf)
 	if err != nil {
 		t.Fatal("new test db return error:", err)
 	}

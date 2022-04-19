@@ -36,9 +36,9 @@ write_timeout = 5
 # 其他环境
 [mysql.other]
 
-########## SQLite3 相关配置
-[sqlite3.dev]
-dbname = "sqlite3.dev.db"
+########## SQLite 相关配置
+[sqlite.dev]
+dbname = "sqlite.dev.db"
 log_mode = false
 
 ########## Postgres 相关配置
