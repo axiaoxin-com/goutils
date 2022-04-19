@@ -9,8 +9,6 @@ import (
 
 // DBConfig 数据库配置
 type DBConfig struct {
-	// DriverName 数据库 driver 类型
-	DriverName string
 	// Host 数据库 IP 地址
 	Host string
 	// Port 数据库端口

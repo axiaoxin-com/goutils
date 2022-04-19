@@ -147,7 +147,6 @@ func GormMySQL(which string) (*gorm.DB, error) {
 	// 注意：这里依赖 viper ，必须在外部先对 viper 配置进行加载
 	prefix := "mysql." + which
 	conf := DBConfig{
-		DriverName:         "",
 		Host:               viper.GetString(prefix + ".host"),
 		Port:               viper.GetInt(prefix + ".port"),
 		Username:           viper.GetString(prefix + ".username"),
