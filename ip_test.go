@@ -11,3 +11,8 @@ func TestGetLocalIP(t *testing.T) {
 		t.Fatal("GetLocalIP ip is empty")
 	}
 }
+
+func TestAnonymousName(t *testing.T) {
+	name := AnonymousName(nil, 1, "132.223.32.12", "spider")
+	t.Log(name)
+}

@@ -2,7 +2,11 @@
 
 package goutils
 
-import "net"
+import (
+	"context"
+	"fmt"
+	"net"
+)
 
 // GetLocalIP 获取当前 IP
 func GetLocalIP() (string, error) {
@@ -15,4 +19,19 @@ func GetLocalIP() (string, error) {
 	localAddr := conn.LocalAddr().(*net.UDPAddr)
 
 	return localAddr.IP.String(), nil
+}
+
+// AnonymousName 返回游客昵称
+func AnonymousName(ctx context.Context, serviceid int, ip, ua string) string {
+	nickname := "游客"
+	h, err := NewHashids(fmt.Sprint(ip, ua), 6, "")
+	if err != nil {
+		return nickname
+	}
+	hid, err := h.Encode(int64(serviceid))
+	if err != nil {
+		return nickname
+	}
+	nickname = "游客" + hid
+	return nickname
 }
