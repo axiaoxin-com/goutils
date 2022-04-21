@@ -95,3 +95,4 @@ Golang 通用类函数工具包
 - [分页计算](./pagination.go)
 - [validator 参数验证错误信息自定义](./validator.go)
 - [封装 go-cache 的 Get 方法支持直接获取具体类型: GetGoCache](./gocache.go)
+- [验证邮箱地址是否合法](./email.go)
