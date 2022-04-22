@@ -22,8 +22,11 @@ func GetLocalIP() (string, error) {
 }
 
 // AnonymousName 返回游客昵称
-func AnonymousName(ctx context.Context, serviceid int, ip, ua string) string {
-	nickname := "游客"
+func AnonymousName(ctx context.Context, serviceid int, ip, ua, prefix string) string {
+	nickname := "网友"
+	if prefix != "" {
+		nickname = prefix
+	}
 	h, err := NewHashids(fmt.Sprint(ip, ua), 6, "")
 	if err != nil {
 		return nickname
@@ -32,6 +35,6 @@ func AnonymousName(ctx context.Context, serviceid int, ip, ua string) string {
 	if err != nil {
 		return nickname
 	}
-	nickname = "游客" + hid
+	nickname += hid
 	return nickname
 }
