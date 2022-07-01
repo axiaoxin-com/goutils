@@ -40,6 +40,7 @@
 package goutils
 
 import (
+	"log"
 	"strings"
 
 	"github.com/speps/go-hashids"
@@ -91,4 +92,53 @@ func (h *Hashids) Decode(hashID string) (int64, error) {
 		return 0, err
 	}
 	return idSlice[0], nil
+}
+
+// MustNewHashids 创建Hashids对象
+// salt可以使用用户创建记录时的用户唯一身份标识+当前时间戳的字符串作为值
+// minLength指定转换后的最小长度,随着数字ID的增大长度可能会变长
+func MustNewHashids(salt string, minLength int, prefix string) *Hashids {
+
+	hd := hashids.NewData()
+	hd.Salt = salt
+	hd.MinLength = minLength
+	h, err := hashids.NewWithData(hd)
+	if err != nil {
+		panic(err)
+	}
+	return &Hashids{
+		HashID:     h,
+		HashIDData: hd,
+		prefix:     prefix,
+	}
+}
+
+// IntHashEncode 返回int的hash值
+func IntHashEncode(i int, salt string, minLength int, prefix string) string {
+	h, err := NewHashids(salt, minLength, prefix)
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	s, err := h.Encode(int64(i))
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	return s
+}
+
+// IntHashDecode 返回hash值对应的int
+func IntHashDecode(s string, salt string, minLength int, prefix string) int {
+	h, err := NewHashids(salt, minLength, prefix)
+	if err != nil {
+		log.Println(err)
+		return 0
+	}
+	i, err := h.Decode(s)
+	if err != nil {
+		log.Println(err)
+		return 0
+	}
+	return int(i)
 }
