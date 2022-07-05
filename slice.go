@@ -68,3 +68,21 @@ func ReversedFloat64Slice(numbers []float64) []float64 {
 	}
 	return numbers
 }
+
+// IntsMinMax 返回给定ints中的最小值和最大值
+func IntsMinMax(ints ...int) (min int, max int) {
+	if len(ints) == 0 {
+		return
+	}
+	min = ints[0]
+	max = ints[0]
+	for _, value := range ints {
+		if value < min {
+			min = value
+		}
+		if value > max {
+			max = value
+		}
+	}
+	return min, max
+}
