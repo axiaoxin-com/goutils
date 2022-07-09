@@ -10,9 +10,9 @@ import (
 // 异常数据时分页总数为 0 ，当前页码、上下页码均不判断逻辑，只管数值增减
 type Pagination struct {
 	// 当前页面数据开始下标
-	StartIndex int
+	StartIndex int `json:"start_index"`
 	// 当前页面数据结束下标
-	EndIndex int
+	EndIndex int `json:"end_index"`
 	// 数据总数
 	TotalCount int `json:"total_count"`
 	// 分页总数
