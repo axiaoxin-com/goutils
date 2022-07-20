@@ -3,6 +3,8 @@
 package goutils
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"math"
 	"regexp"
@@ -77,4 +79,12 @@ func YiWanString(num float64) string {
 // SplitStringFields 将传入字符串分割为slice
 func SplitStringFields(s string) []string {
 	return regexp.MustCompile("[\\/\\:\\,\\;\\.\\s\\-\\|\\#\\$\\%\\&\\+\\=\\?]+").Split(s, -1)
+}
+
+// MD5 string md5
+func MD5(v string) string {
+	d := []byte(v)
+	m := md5.New()
+	m.Write(d)
+	return hex.EncodeToString(m.Sum(nil))
 }
