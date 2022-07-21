@@ -86,7 +86,8 @@ Golang 通用类函数工具包
 
 ## Map相关
 
-- [返回`map[int]int{}`按value排序后的keys](./map.go)
+- [返回`map[int]int{}`按value排序后的keys: MapIntIntSortedKeys](./map.go)
+- [返回`map[string]int{}`按value排序后的keys: MapStrIntSortedKeys](./map.go)
 
 ### 其他分类
 
