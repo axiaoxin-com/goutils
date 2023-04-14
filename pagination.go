@@ -19,6 +19,8 @@ type Pagination struct {
 	PagesCount int `json:"pages_count"`
 	// 当前页码
 	PageNum int `json:"page_num"`
+	// 当前 offset
+	PageOffset int `json:"page_offset"`
 	// 上一页页码
 	PrevPageNum int `json:"prev_page_num"`
 	// 下一页页码
@@ -75,6 +77,8 @@ func PaginateByPageNumSize(totalCount, pageNum, pageSize int) Pagination {
 	} else if offset > pagi.TotalCount {
 		offset = pagi.TotalCount
 	}
+	pagi.PageOffset = offset
+
 	end := offset + pagi.PageSize
 	if end > pagi.TotalCount {
 		end = pagi.TotalCount
