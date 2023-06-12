@@ -24,8 +24,12 @@ func IsEqualStringSlice(s1, s2 []string) bool {
 
 // ChunkFloat64Slice float64 slice 按指定大小进行切块
 func ChunkFloat64Slice(data []float64, chunkSize int) [][]float64 {
-	result := [][]float64{}
 	dataLen := len(data)
+	if dataLen <= chunkSize {
+		return [][]float64{data}
+	}
+
+	result := [][]float64{}
 	for i := 0; i < dataLen; i += chunkSize {
 		end := i + chunkSize
 		if end > dataLen {
