@@ -89,6 +89,10 @@ Golang 通用类函数工具包
 - [返回`map[int]int{}`按value排序后的keys: MapIntIntSortedKeys](./map.go)
 - [返回`map[string]int{}`按value排序后的keys: MapStrIntSortedKeys](./map.go)
 
+## 随机
+
+- [返回一个范围为`[start, end]`的int型随机数：RandInt](./rand.go)
+
 ### 其他分类
 
 - [错误码结构体对象封装](./errcode.go)
