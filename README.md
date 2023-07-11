@@ -45,6 +45,7 @@ Golang 通用类函数工具包
 - [反转字符串: ReverseString](./string.go)
 - [删除字符串中的重复空白符: RemoveDuplicateWhitespace](./string.go)
 - [返回字符串md5值: MD5](./string.go)
+- [移除markdown文本中的标记返回纯文本内容: RemoveMarkdownTags](./string.go)
 
 ### 配置相关
 

@@ -73,7 +73,6 @@ func YiWanString(num float64) string {
 		return fmt.Sprintf("%.2f 万", wan)
 	}
 	return fmt.Sprint(num)
-
 }
 
 // SplitStringFields 将传入字符串分割为slice
@@ -87,4 +86,44 @@ func MD5(v string) string {
 	m := md5.New()
 	m.Write(d)
 	return hex.EncodeToString(m.Sum(nil))
+}
+
+// RemoveMarkdownTags 移除markdown文本中的标记返回纯文本内容
+func RemoveMarkdownTags(markdownText string) string {
+	// 移除内联CSS样式
+	markdownText = regexp.MustCompile("<style>[\\s\\S]*?</style>").ReplaceAllString(markdownText, "")
+
+	// 移除内联JavaScript代码
+	markdownText = regexp.MustCompile("<script>[\\s\\S]*?</script>").ReplaceAllString(markdownText, "")
+
+	// 移除HTML标记
+	markdownText = regexp.MustCompile(`<[^>]+>`).ReplaceAllString(markdownText, "")
+
+	// 移除分隔线
+	markdownText = regexp.MustCompile(`-{3,}\n`).ReplaceAllString(markdownText, "")
+
+	// 移除粗体
+	markdownText = regexp.MustCompile(`\*\*(.*?)\*\*`).ReplaceAllString(markdownText, "$1")
+
+	// 移除斜体
+	markdownText = regexp.MustCompile(`\*(.*?)\*`).ReplaceAllString(markdownText, "$1")
+
+	// 移除标题
+	markdownText = regexp.MustCompile(`#+\s+(.*?)\n`).ReplaceAllString(markdownText, "$1\n")
+
+	// 移除链接/图片
+	markdownText = regexp.MustCompile(`\[(.*?)\]\(.*?\)`).ReplaceAllString(markdownText, "$1")
+
+	// 移除代码块
+	markdownText = regexp.MustCompile("```.*?```").ReplaceAllString(markdownText, "")
+
+	// 移除列表
+	markdownText = regexp.MustCompile(`[-*]\s+(.*?)\n`).ReplaceAllString(markdownText, "$1\n")
+
+	// 移除删除线
+	markdownText = regexp.MustCompile(`~~(.*?)~~`).ReplaceAllString(markdownText, "$1")
+
+	// 移除引用
+	markdownText = regexp.MustCompile(`>\s*`).ReplaceAllString(markdownText, "")
+	return markdownText
 }
