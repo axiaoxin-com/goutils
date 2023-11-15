@@ -13,6 +13,9 @@ func MapIntIntSortedKeys(m map[int]int, desc bool) []int {
 	}
 
 	sort.SliceStable(keys, func(i, j int) bool {
+		if m[keys[i]] == m[keys[j]] { // 如果值相同，就按照key的大小排序
+			return keys[i] < keys[j]
+		}
 		if desc {
 			return m[keys[i]] > m[keys[j]]
 		}
@@ -31,8 +34,11 @@ func MapStrIntSortedKeys(m map[string]int, desc bool) []string {
 	}
 
 	sort.SliceStable(keys, func(i, j int) bool {
+		if m[keys[i]] == m[keys[j]] { // 如果值相同，就按照key的字典序排序
+			return keys[i] < keys[j]
+		}
 		if desc {
-			return m[keys[i]] > m[keys[j]]
+			return m[keys[i]] >= m[keys[j]]
 		}
 		return m[keys[i]] < m[keys[j]]
 	})
