@@ -17,7 +17,7 @@ func AddQueryParam(baseURL, paramKey, paramValue string) (string, error) {
 	query := parsedURL.Query()
 
 	// 添加新的查询参数
-	query.Add(paramKey, paramValue)
+	query.Set(paramKey, paramValue)
 
 	// 将新的查询参数设置回URL中
 	parsedURL.RawQuery = query.Encode()
