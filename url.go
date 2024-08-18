@@ -1,23 +1,27 @@
 package goutils
 
 import (
-	"bytes"
-	"crypto/sha1"
-	"io"
+	"fmt"
 	"net/url"
 )
 
-// URLKey 根据 url 生成 key ，默认使用 url escape ，长度超过 200 则使用 sha1 结果
-func URLKey(prefix, u string) string {
-	key := url.QueryEscape(u)
-	if len(key) > 200 {
-		h := sha1.New()
-		io.WriteString(h, u)
-		key = string(h.Sum(nil))
+// AddQueryParam 向已有URL中追加查询参数
+func AddQueryParam(baseURL, paramKey, paramValue string) (string, error) {
+	// 解析原始URL
+	parsedURL, err := url.Parse(baseURL)
+	if err != nil {
+		return "", fmt.Errorf("error parsing URL: %v", err)
 	}
-	var buffer bytes.Buffer
-	buffer.WriteString(prefix)
-	buffer.WriteString(":")
-	buffer.WriteString(key)
-	return buffer.String()
+
+	// 获取现有查询参数
+	query := parsedURL.Query()
+
+	// 添加新的查询参数
+	query.Add(paramKey, paramValue)
+
+	// 将新的查询参数设置回URL中
+	parsedURL.RawQuery = query.Encode()
+
+	// 生成并返回最终的URL
+	return parsedURL.String(), nil
 }

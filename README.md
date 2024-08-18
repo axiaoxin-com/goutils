@@ -10,7 +10,6 @@ Golang 通用类函数工具包
 
 ## 功能概览
 
-
 ### Redis 相关
 
 - [redis 常用操作封装（包括但不限于：创建各类连接客户端实例，根据 viper 配置直接获取对应实例）](./redis.go)
@@ -44,8 +43,8 @@ Golang 通用类函数工具包
 - [删除字符串中所有的空白符: RemoveAllWhitespace](./string.go)
 - [反转字符串: ReverseString](./string.go)
 - [删除字符串中的重复空白符: RemoveDuplicateWhitespace](./string.go)
-- [返回字符串md5值: MD5](./string.go)
-- [移除markdown文本中的标记返回纯文本内容: RemoveMarkdownTags](./string.go)
+- [返回字符串 md5 值: MD5](./string.go)
+- [移除 markdown 文本中的标记返回纯文本内容: RemoveMarkdownTags](./string.go)
 
 ### 配置相关
 
@@ -53,7 +52,7 @@ Golang 通用类函数工具包
 
 ### URL 相关
 
-- [生成 url key: URLKey](./url.go)
+- [向已有 URL 中追加查询参数 AddQueryParam](./url.go)
 
 ### Struct 相关
 
@@ -85,14 +84,14 @@ Golang 通用类函数工具包
 - [求 float64 列表标准差: StdDeviationFloat64](./statistics.go)
 - [求 float64 列表中位数: MidValueFloat64](./statistics.go)
 
-## Map相关
+## Map 相关
 
-- [返回`map[int]int{}`按value排序后的keys: MapIntIntSortedKeys](./map.go)
-- [返回`map[string]int{}`按value排序后的keys: MapStrIntSortedKeys](./map.go)
+- [返回`map[int]int{}`按 value 排序后的 keys: MapIntIntSortedKeys](./map.go)
+- [返回`map[string]int{}`按 value 排序后的 keys: MapStrIntSortedKeys](./map.go)
 
 ## 随机
 
-- [返回一个范围为`[start, end]`的int型随机数：RandInt](./rand.go)
+- [返回一个范围为`[start, end]`的 int 型随机数：RandInt](./rand.go)
 
 ### 其他分类
 
