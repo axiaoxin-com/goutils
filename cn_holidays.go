@@ -8,6 +8,7 @@ var ChinaHolidays = map[string]map[string]bool{
 	"2022": ChinaHolidays2022,
 	"2023": ChinaHolidays2023,
 	"2024": ChinaHolidays2024,
+	"2025": ChinaHolidays2025,
 }
 
 // ChinaHolidays2021 2021年中国法定节假日
@@ -169,4 +170,44 @@ var ChinaHolidays2024 = map[string]bool{
 	"2024-10-05": true,
 	"2024-10-06": true,
 	"2024-10-07": true,
+}
+
+// ChinaHolidays2025 2025年中国法定节假日
+// https://www.gov.cn/zhengce/content/202411/content_6986382.htm
+var ChinaHolidays2025 = map[string]bool{
+	// 元旦
+	"2025-01-01": true,
+	// 春节
+	"2025-01-28": true,
+	"2025-01-29": true,
+	"2025-01-30": true,
+	"2025-01-31": true,
+	"2025-02-01": true,
+	"2025-02-02": true,
+	"2025-02-03": true,
+	"2025-02-04": true,
+	// 清明节
+	"2025-04-04": true,
+	"2025-04-05": true,
+	"2025-04-06": true,
+	// 劳动节
+	"2025-05-01": true,
+	"2025-05-02": true,
+	"2025-05-03": true,
+	"2025-05-04": true,
+	"2025-05-05": true,
+	// 端午节
+	"2025-05-31": true,
+	"2025-06-01": true,
+	"2025-06-02": true,
+	// 国庆日
+	// 中秋节
+	"2025-10-01": true,
+	"2025-10-02": true,
+	"2025-10-03": true,
+	"2025-10-04": true,
+	"2025-10-05": true,
+	"2025-10-06": true, // 中秋
+	"2025-10-07": true,
+	"2025-10-08": true,
 }
