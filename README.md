@@ -45,7 +45,7 @@ Golang 通用类函数工具包
 - [删除字符串中的重复空白符: RemoveDuplicateWhitespace](./string.go)
 - [返回字符串 md5 值: MD5](./string.go)
 - [移除 markdown 文本中的标记返回纯文本内容: RemoveMarkdownTags](./string.go)
-- [检查字符串是否以拉丁字母结尾: IsLatinLetterEnding](./string.go)
+- [检查字符串是否以字母和数字结尾: IsAlphaNumericEnding](./string.go)
 
 ### 配置相关
 

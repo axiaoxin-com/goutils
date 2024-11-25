@@ -9,7 +9,6 @@ import (
 	"math"
 	"regexp"
 	"strings"
-	"unicode"
 
 	"github.com/antlabs/strsim"
 )
@@ -129,20 +128,9 @@ func RemoveMarkdownTags(markdownText string) string {
 	return markdownText
 }
 
-// IsLatinLetterEnding 检查字符串是否以拉丁字母结尾
-func IsLatinLetterEnding(s string) bool {
-	if len(s) == 0 {
-		return false
-	}
-
-	// 获取最后一个字符
-	lastRune := []rune(s)[len([]rune(s))-1]
-
-	// 方法1: 使用 unicode 包的 IsLetter 函数
-	if unicode.IsLetter(lastRune) {
-		// 检查是否在拉丁字母范围内 (A-Z 或 a-z)
-		return (lastRune >= 'A' && lastRune <= 'Z') || (lastRune >= 'a' && lastRune <= 'z')
-	}
-
-	return false
+// IsAlphaNumericEnding 检查字符串是否以字母和数字结尾
+func IsAlphaNumericEnding(s string) bool {
+	// 使用正则表达式检查是否以字母或数字结尾
+	re := regexp.MustCompile(`[a-zA-Z0-9]$`)
+	return re.MatchString(s)
 }
