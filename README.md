@@ -54,6 +54,7 @@ Golang 通用类函数工具包
 ### URL 相关
 
 - [向已有 URL 中追加查询参数 AddQueryParam](./url.go)
+- [JoinPath joins either filesystem paths or URL paths.](./url.go)
 
 ### Struct 相关
 
