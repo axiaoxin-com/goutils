@@ -34,7 +34,6 @@ type Pagination struct {
 }
 
 // PaginateByPageNumSize 按 pagenum,pagesize 计算分页信息
-// 参数必须全部大于 0
 func PaginateByPageNumSize(totalCount, pageNum, pageSize int) Pagination {
 	pagi := Pagination{}
 	if totalCount == 0 {
@@ -42,54 +41,66 @@ func PaginateByPageNumSize(totalCount, pageNum, pageSize int) Pagination {
 	}
 	pagi.TotalCount = totalCount
 
-	pagi.PageNum = pageNum
-	if pageNum <= 0 {
-		pagi.PageNum = 1
-	}
-
-	// pageSize <= 0 返回全量数据
-	pagi.PageSize = pageSize
+	// 校验 pageSize
 	if pageSize <= 0 {
-		pagi.PageSize = totalCount
+		pageSize = totalCount // 如果 pageSize 小于等于 0，则返回所有数据
 	}
+	pagi.PageSize = pageSize
 
+	// 计算总页数
 	pagi.PagesCount = int(math.Ceil(float64(pagi.TotalCount) / float64(pagi.PageSize)))
 
-	pagi.NextPageNum = pagi.PageNum + 1
-	pagi.HasNext = true
-	// 下一页超过最大页数返回第一页
-	if pagi.NextPageNum > pagi.PagesCount {
-		pagi.NextPageNum = 1
-		pagi.HasNext = false
+	// 校验 pageNum
+	if pageNum <= 0 {
+		pageNum = 1 // 如果 pageNum 小于等于 0，则返回第一页
+	} else if pageNum > pagi.PagesCount {
+		pageNum = pagi.PagesCount // 如果 pageNum 超过总页数，则返回最后一页
 	}
+	pagi.PageNum = pageNum
 
-	// 上一页小于第一页返回最后一页
-	pagi.PrevPageNum = pagi.PageNum - 1
-	pagi.HasPrev = true
-	if pagi.PrevPageNum < 1 {
-		pagi.PrevPageNum = pagi.PagesCount
-		pagi.HasPrev = false
-	}
-
+	// 计算 offset
 	offset := (pagi.PageNum - 1) * pagi.PageSize
 	if offset < 0 {
 		offset = 0
 	} else if offset > pagi.TotalCount {
-		offset = pagi.TotalCount
+		offset = (pagi.TotalCount - 1) / pagi.PageSize * pagi.PageSize
 	}
 	pagi.PageOffset = offset
 
+	// 计算开始和结束索引
 	end := offset + pagi.PageSize
 	if end > pagi.TotalCount {
 		end = pagi.TotalCount
 	}
 	pagi.StartIndex = offset
 	pagi.EndIndex = end
+
+	// 计算上一页和下一页
+	pagi.NextPageNum = pagi.PageNum + 1
+	pagi.HasNext = pagi.NextPageNum <= pagi.PagesCount
+	if !pagi.HasNext {
+		pagi.NextPageNum = 1
+	}
+
+	pagi.PrevPageNum = pagi.PageNum - 1
+	pagi.HasPrev = pagi.PrevPageNum >= 1
+	if !pagi.HasPrev {
+		pagi.PrevPageNum = pagi.PagesCount
+	}
+
 	return pagi
 }
 
 // PaginateByOffsetLimit 按 offset,limit 计算分页信息
 func PaginateByOffsetLimit(totalCount, offset, limit int) Pagination {
+	// 校验 limit
+	if limit <= 0 {
+		limit = totalCount // 如果 limit 小于等于 0，则返回所有数据
+	}
+	// 如果 offset 超出总数据量，将其调整为最后一页的起始位置
+	if offset >= totalCount {
+		offset = (totalCount - 1) / limit * limit
+	}
 	pageNum := offset/limit + 1
 	pageSize := limit
 	return PaginateByPageNumSize(totalCount, pageNum, pageSize)
