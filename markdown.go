@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"html/template"
 
+	htmltomarkdown "github.com/JohannesKaufmann/html-to-markdown/v2"
+
 	chromav2html "github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
@@ -78,4 +80,16 @@ func MarkdownToTemplateHTML(source string, enableUnsafe bool) (template.HTML, er
 	}
 
 	return template.HTML(buf.String()), nil
+}
+
+// HTMLToMarkdown 将 HTML 转换回 Markdown。
+// 注意：部分 HTML 特性（如自定义标题 ID、Mermaid 图表渲染后的 SVG）
+// 无法完美还原为 Markdown 原文，会转为最接近的 Markdown 表示。
+func HTMLToMarkdown(source string) (string, error) {
+	markdown, err := htmltomarkdown.ConvertString(source)
+	if err != nil {
+		return "", err
+	}
+
+	return markdown, nil
 }
