@@ -57,7 +57,6 @@ type Hashids struct {
 // salt可以使用用户创建记录时的用户唯一身份标识+当前时间戳的字符串作为值
 // minLength指定转换后的最小长度,随着数字ID的增大长度可能会变长
 func NewHashids(salt string, minLength int, prefix string) (*Hashids, error) {
-
 	hd := hashids.NewData()
 	hd.Salt = salt
 	hd.MinLength = minLength
@@ -98,7 +97,6 @@ func (h *Hashids) Decode(hashID string) (int64, error) {
 // salt可以使用用户创建记录时的用户唯一身份标识+当前时间戳的字符串作为值
 // minLength指定转换后的最小长度,随着数字ID的增大长度可能会变长
 func MustNewHashids(salt string, minLength int, prefix string) *Hashids {
-
 	hd := hashids.NewData()
 	hd.Salt = salt
 	hd.MinLength = minLength
@@ -141,4 +139,34 @@ func IntHashDecode(s string, salt string, minLength int, prefix string) int {
 		return 0
 	}
 	return int(i)
+}
+
+// Int64HashEncode 返回int64的hash值
+func Int64HashEncode(i int64, salt string, minLength int, prefix string) string {
+	h, err := NewHashids(salt, minLength, prefix)
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	s, err := h.Encode(i)
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	return s
+}
+
+// Int64HashDecode 返回hash值对应的int64
+func Int64HashDecode(s string, salt string, minLength int, prefix string) int64 {
+	h, err := NewHashids(salt, minLength, prefix)
+	if err != nil {
+		log.Println(err)
+		return 0
+	}
+	i, err := h.Decode(s)
+	if err != nil {
+		log.Println(err)
+		return 0
+	}
+	return i
 }
