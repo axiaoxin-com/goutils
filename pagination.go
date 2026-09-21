@@ -105,3 +105,86 @@ func PaginateByOffsetLimit(totalCount, offset, limit int) Pagination {
 	pageSize := limit
 	return PaginateByPageNumSize(totalCount, pageNum, pageSize)
 }
+
+// ============ 新增 int64 分页版本 ============
+
+// Pagination64 int64版本分页结构体，适配BIGINT大数量
+type Pagination64 struct {
+	StartIndex  int64 `json:"start_index"`
+	EndIndex    int64 `json:"end_index"`
+	TotalCount  int64 `json:"total_count"`
+	PagesCount  int64 `json:"pages_count"`
+	PageNum     int64 `json:"page_num"`
+	PageOffset  int64 `json:"page_offset"`
+	PrevPageNum int64 `json:"prev_page_num"`
+	NextPageNum int64 `json:"next_page_num"`
+	PageSize    int64 `json:"page_size"`
+	HasPrev     bool  `json:"has_prev"`
+	HasNext     bool  `json:"has_next"`
+}
+
+// PaginateByPageNumSize64 按页码+页大小计算分页（int64）
+func PaginateByPageNumSize64(totalCount, pageNum, pageSize int64) Pagination64 {
+	pagi := Pagination64{}
+	if totalCount == 0 {
+		return pagi
+	}
+	pagi.TotalCount = totalCount
+
+	if pageSize <= 0 {
+		pageSize = totalCount
+	}
+	pagi.PageSize = pageSize
+
+	// 总页数向上取整
+	pagi.PagesCount = (totalCount + pageSize - 1) / pageSize // 🔥 推荐：用整数运算替代math.Ceil，规避float64精度丢失（超大int64转float会丢精度！）
+
+	// 页码边界矫正
+	if pageNum <= 0 {
+		pageNum = 1
+	} else if pageNum > pagi.PagesCount {
+		pageNum = pagi.PagesCount
+	}
+	pagi.PageNum = pageNum
+
+	offset := (pagi.PageNum - 1) * pagi.PageSize
+	if offset < 0 {
+		offset = 0
+	} else if offset > pagi.TotalCount {
+		offset = (pagi.TotalCount - 1) / pagi.PageSize * pagi.PageSize
+	}
+	pagi.PageOffset = offset
+
+	end := offset + pagi.PageSize
+	if end > pagi.TotalCount {
+		end = pagi.TotalCount
+	}
+	pagi.StartIndex = offset
+	pagi.EndIndex = end
+
+	pagi.NextPageNum = pagi.PageNum + 1
+	pagi.HasNext = pagi.NextPageNum <= pagi.PagesCount
+	if !pagi.HasNext {
+		pagi.NextPageNum = 1
+	}
+
+	pagi.PrevPageNum = pagi.PageNum - 1
+	pagi.HasPrev = pagi.PrevPageNum >= 1
+	if !pagi.HasPrev {
+		pagi.PrevPageNum = pagi.PagesCount
+	}
+	return pagi
+}
+
+// PaginateByOffsetLimit64 按offset+limit计算分页（int64）
+func PaginateByOffsetLimit64(totalCount, offset, limit int64) Pagination64 {
+	if limit <= 0 {
+		limit = totalCount
+	}
+	if offset >= totalCount {
+		offset = (totalCount - 1) / limit * limit
+	}
+	pageNum := offset/limit + 1
+	pageSize := limit
+	return PaginateByPageNumSize64(totalCount, pageNum, pageSize)
+}
